@@ -22,6 +22,13 @@
   Información del perfil: Ver información básica del perfil del usuario (nombre, correo electrónico, foto de perfil).
 
 - Profile Screen
+  Opciones para cambiar el idioma, tema
+  Saber si esta autenticado, para asi poder guardar de manera online
+  Perfil del usuario, si tiene cuenta mostrar la foto de google
+  Agregar Categorias
+  Lista Notificaciones(Locales, Remotas(Push))
+  Cerrar session si esta logueado
+
   
 
 - Reportes con Gráficos:
