@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
-import '../../application/providers/reminder_providers.dart';
-import '../../domain/models/reminder.dart';
+
+import '../../../application/providers/reminder_providers.dart';
+import '../../../domain/models/reminder.dart';
 
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});

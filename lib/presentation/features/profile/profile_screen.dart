@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../application/providers/auth_providers.dart';
-import '../../application/providers/sync_provider.dart';
-import '../../application/providers/theme_provider.dart';
-import '../../application/providers/language_provider.dart';
-import 'notifications_screen.dart';
-import '../widgets/category_management_dialog.dart';
+import '../../../application/providers/auth_providers.dart';
+import '../../../application/providers/sync_provider.dart';
+import '../../../application/providers/theme_provider.dart';
+import '../../../application/providers/language_provider.dart';
+import '../notifications/notifications_screen.dart';
+import '../../widgets/category_management_dialog.dart';
 import 'package:intl/intl.dart';
 
 class ProfileScreen extends ConsumerWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../application/providers/filter_providers.dart';
-import '../widgets/reminder_card.dart';
+import '../../../application/providers/filter_providers.dart';
+import '../../widgets/reminder_card.dart';
 import 'create_reminder_screen.dart';
 
 class ReminderListScreen extends ConsumerWidget {
