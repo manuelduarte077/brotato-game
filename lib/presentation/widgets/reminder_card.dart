@@ -19,7 +19,15 @@ class ReminderCard extends ConsumerWidget {
 
     return Card(
       child: ListTile(
-        title: Text(reminder.title),
+        title: Row(
+          children: [
+            Expanded(child: Text(reminder.title)),
+            if (reminder.isSynced)
+              const Icon(Icons.cloud_done, size: 16, color: Colors.green)
+            else
+              const Icon(Icons.cloud_off, size: 16, color: Colors.grey),
+          ],
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
