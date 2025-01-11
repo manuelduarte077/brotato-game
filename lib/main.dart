@@ -1,7 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'application/providers/auth_providers.dart';
+import 'application/providers/theme_provider.dart';
 import 'firebase_options.dart';
+import 'presentation/screens/profile_screen.dart';
 import 'presentation/screens/reminder_list_screen.dart';
 import 'presentation/screens/calendar_screen.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -27,18 +30,37 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(authInitializationProvider);
+
+    final isDarkMode = ref.watch(themeProvider.select(
+      (future) => future.when(
+        data: (value) => value,
+        loading: () => false,
+        error: (_, __) => false,
+      ),
+    ));
+
     return MaterialApp(
       title: 'Reminder App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
       home: const HomeScreen(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.light(
+          primary: Colors.indigo,
+          secondary: Colors.indigoAccent,
+        ),
+      ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.dark(
+          primary: Colors.indigo.shade200,
+          secondary: Colors.indigoAccent.shade200,
+        ),
+      ),
+      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
     );
   }
 }
@@ -53,9 +75,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _screens = [
-    ReminderListScreen(),
-    CalendarScreen(),
+  final List<Widget> _screens = [
+    const ReminderListScreen(),
+    const CalendarScreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -96,6 +119,10 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
             label: 'Calendar',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
       ),

@@ -76,4 +76,15 @@ class DriftReminderRepository implements ReminderRepository {
         .watch()
         .map((rows) => rows.map(_mapToModel).toList());
   }
+
+  @override
+  Future<void> deleteAllReminders() async {
+    await (_db.delete(_db.reminders)).go();
+  }
+
+  @override
+  Future<void> createOrUpdateReminder(Reminder reminder) async {
+    final companion = _mapToCompanion(reminder);
+    await _db.into(_db.reminders).insertOnConflictUpdate(companion);
+  }
 }

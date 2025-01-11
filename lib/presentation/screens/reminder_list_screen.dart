@@ -16,14 +16,21 @@ class ReminderListScreen extends ConsumerWidget {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
             child: SearchBar(
+              elevation: WidgetStateProperty.all(0),
+              side: WidgetStateProperty.all(
+                BorderSide(color: Colors.black),
+              ),
+              shape: WidgetStatePropertyAll(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               hintText: 'Search reminders...',
               onChanged: (query) {
                 ref.read(filterStateProvider.notifier).state =
                     filterState.copyWith(searchQuery: query);
-
-                print(query);
               },
             ),
           ),
