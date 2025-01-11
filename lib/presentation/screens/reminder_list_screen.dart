@@ -1,0 +1,69 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../application/providers/filter_providers.dart';
+import '../widgets/filter_dialog.dart';
+import '../widgets/reminder_card.dart';
+import 'create_reminder_screen.dart';
+
+class ReminderListScreen extends ConsumerWidget {
+  const ReminderListScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final filteredReminders = ref.watch(filteredRemindersProvider);
+    final filterState = ref.watch(filterStateProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Reminders'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => const FilterDialog(),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SearchBar(
+              hintText: 'Search reminders...',
+              onChanged: (query) {
+                ref.read(filterStateProvider.notifier).state =
+                    filterState.copyWith(searchQuery: query);
+
+                print(query);
+              },
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: filteredReminders.length,
+              padding: const EdgeInsets.all(8),
+              itemBuilder: (context, index) {
+                final reminder = filteredReminders[index];
+                return ReminderCard(reminder: reminder);
+              },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const CreateReminderScreen(),
+            ),
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
