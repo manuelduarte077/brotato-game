@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'application/providers/auth_providers.dart';
 import 'application/providers/theme_provider.dart';
 import 'firebase_options.dart';
 import 'presentation/screens/profile_screen.dart';
@@ -34,6 +35,9 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Esperar la inicialización de la autenticación
+    ref.watch(authInitializationProvider);
+
     final isDarkMode = ref.watch(themeProvider.select(
       (future) => future.when(
         data: (value) => value,
@@ -75,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = [
     const ReminderListScreen(),
     const CalendarScreen(),
-    const ProfileScreen(),
+    ProfileScreen(),
   ];
 
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../application/providers/firebase_providers.dart';
+import '../../application/providers/auth_providers.dart';
 import '../../application/providers/theme_provider.dart';
 import '../../application/providers/language_provider.dart';
 import 'notifications_screen.dart';
@@ -11,7 +11,8 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(authStateChangesProvider).value;
+    final authState = ref.watch(authStateProvider);
+
     final isDarkModeAsync = ref.watch(themeProvider);
     final currentLanguage = ref.watch(languageProvider);
 
@@ -20,27 +21,51 @@ class ProfileScreen extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(16.0),
       children: [
-        // User Profile Section
-        if (user != null) ...[
-          Center(
-            child: CircleAvatar(
-              radius: 50,
-              backgroundImage: NetworkImage(user.photoURL ?? ''),
-            ),
-          ),
-          const SizedBox(height: 16),
+        if (authState.isLoading)
+          const Center(child: CircularProgressIndicator()),
+        if (authState.error != null)
           Text(
-            user.displayName ?? 'User',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
+            authState.error!,
+            style: const TextStyle(color: Colors.red),
           ),
-          Text(
-            user.email ?? '',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ],
-
+        if (!authState.isLoading)
+          authState.user == null
+              ? ElevatedButton(
+                  onPressed: () {
+                    ref.read(authStateProvider.notifier).signInWithGoogle();
+                  },
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.login),
+                      SizedBox(width: 8),
+                      Text('Sign in with Google'),
+                    ],
+                  ),
+                )
+              : Column(
+                  children: [
+                    ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                          authState.user!.photoURL ?? '',
+                        ),
+                      ),
+                      title: Text(authState.user!.displayName ?? ''),
+                      subtitle: Text(authState.user!.email ?? ''),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        ref.read(authStateProvider.notifier).signOut();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Sign Out'),
+                    ),
+                  ],
+                ),
         const SizedBox(height: 32),
 
         // Theme Toggle
@@ -110,28 +135,6 @@ class ProfileScreen extends ConsumerWidget {
             );
           },
         ),
-
-        const SizedBox(height: 32),
-
-        // Authentication Button
-        if (user == null)
-          ElevatedButton(
-            onPressed: () {
-              // ref.read(authControllerProvider).signInWithGoogle();
-            },
-            child: const Text('Sign in with Google'),
-          )
-        else
-          ElevatedButton(
-            onPressed: () {
-              // ref.read(authControllerProvider).signOut();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Sign Out'),
-          ),
       ],
     );
   }
