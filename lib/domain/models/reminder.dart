@@ -1,5 +1,6 @@
 class Reminder {
   final int? id;
+  final String? userId;
   final String title;
   final String? description;
   final double amount;
@@ -10,9 +11,11 @@ class Reminder {
   final int? recurrenceInterval;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final bool isSynced;
 
   Reminder({
     this.id,
+    this.userId,
     required this.title,
     this.description,
     required this.amount,
@@ -23,11 +26,13 @@ class Reminder {
     this.recurrenceInterval,
     DateTime? createdAt,
     DateTime? updatedAt,
+    this.isSynced = false,
   })  : createdAt = createdAt ?? DateTime.now(),
         updatedAt = updatedAt ?? DateTime.now();
 
   Reminder copyWith({
     int? id,
+    String? userId,
     String? title,
     String? description,
     double? amount,
@@ -38,9 +43,11 @@ class Reminder {
     int? recurrenceInterval,
     DateTime? createdAt,
     DateTime? updatedAt,
+    bool? isSynced,
   }) {
     return Reminder(
       id: id ?? this.id,
+      userId: userId ?? this.userId,
       title: title ?? this.title,
       description: description ?? this.description,
       amount: amount ?? this.amount,
@@ -51,6 +58,7 @@ class Reminder {
       recurrenceInterval: recurrenceInterval ?? this.recurrenceInterval,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      isSynced: isSynced ?? this.isSynced,
     );
   }
 }
