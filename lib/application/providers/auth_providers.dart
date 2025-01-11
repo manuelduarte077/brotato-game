@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pay_reminder/application/providers/firebase_providers.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:pay_reminder/application/providers/sync_provider.dart';
 
 class AuthState {
   final bool isLoading;
@@ -34,13 +35,16 @@ class AuthState {
 class AuthNotifier extends StateNotifier<AuthState> {
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
+  final Ref _ref;
   late StreamSubscription<User?> _authStateSubscription;
 
   AuthNotifier({
     required FirebaseAuth auth,
     required GoogleSignIn googleSignIn,
+    required Ref ref,
   })  : _auth = auth,
         _googleSignIn = googleSignIn,
+        _ref = ref,
         super(AuthState(user: auth.currentUser)) {
     _authStateSubscription = _auth.authStateChanges().listen((user) {
       state = state.copyWith(user: user);
@@ -73,6 +77,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
+
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
@@ -83,6 +88,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
       }
 
       final userCredential = await _auth.signInWithCredential(credential);
+
+      if (userCredential.user != null) {
+        await _ref.read(syncNotifierProvider.notifier).syncFromRemote();
+      }
 
       print('Usuario autenticado: ${userCredential.user?.uid}');
       state = state.copyWith(
@@ -127,6 +136,7 @@ final authStateProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier(
     auth: ref.watch(firebaseAuthProvider),
     googleSignIn: ref.watch(googleSignInProvider),
+    ref: ref,
   );
 });
 

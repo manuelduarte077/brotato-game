@@ -35,7 +35,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Esperar la inicialización de la autenticación
     ref.watch(authInitializationProvider);
 
     final isDarkMode = ref.watch(themeProvider.select(
@@ -51,14 +50,14 @@ class MyApp extends ConsumerWidget {
       home: const HomeScreen(),
       theme: ThemeData(
         colorScheme: ColorScheme.light(
-          primary: Colors.blue,
-          secondary: Colors.blueAccent,
+          primary: Colors.indigo,
+          secondary: Colors.indigoAccent,
         ),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.dark(
-          primary: Colors.blue.shade200,
-          secondary: Colors.blueAccent.shade200,
+          primary: Colors.indigo.shade200,
+          secondary: Colors.indigoAccent.shade200,
         ),
       ),
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
