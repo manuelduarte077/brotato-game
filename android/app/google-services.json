@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "748561237711",
+    "project_id": "pay-reminder-5fcd9",
+    "storage_bucket": "pay-reminder-5fcd9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:748561237711:android:2a7ebb9fc01a30049719ba",
+        "android_client_info": {
+          "package_name": "dev.donmanuel.pay_reminder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4vMwUYoQBadZJwzWC6ZEP8VuwLSq5zO0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
