@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../application/providers/auth_providers.dart';
+import '../../application/providers/sync_provider.dart';
 import '../../application/providers/theme_provider.dart';
 import '../../application/providers/language_provider.dart';
 import 'notifications_screen.dart';
 import '../widgets/category_management_dialog.dart';
+import 'package:intl/intl.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -48,11 +50,12 @@ class ProfileScreen extends ConsumerWidget {
                     ListTile(
                       leading: CircleAvatar(
                         backgroundImage: NetworkImage(
-                          authState.user!.photoURL ?? '',
+                          authState.user?.photoURL ??
+                              'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
                         ),
                       ),
-                      title: Text(authState.user!.displayName ?? ''),
-                      subtitle: Text(authState.user!.email ?? ''),
+                      title: Text(authState.user?.displayName ?? ''),
+                      subtitle: Text(authState.user?.email ?? ''),
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -122,6 +125,17 @@ class ProfileScreen extends ConsumerWidget {
           },
         ),
 
+        /// Sync
+        ListTile(
+          leading: const Icon(Icons.sync),
+          title: const Text('Sincronizar'),
+          subtitle: Text(_getSyncStatusText(ref)),
+          trailing: _buildSyncIndicator(ref),
+          onTap: () {
+            ref.read(syncNotifierProvider.notifier).syncFromRemote();
+          },
+        ),
+
         // Notifications Settings
         ListTile(
           leading: const Icon(Icons.notifications),
@@ -144,5 +158,32 @@ class ProfileScreen extends ConsumerWidget {
       context: context,
       builder: (context) => const CategoryManagementDialog(),
     );
+  }
+
+  String _getSyncStatusText(WidgetRef ref) {
+    final syncState = ref.watch(syncNotifierProvider);
+    if (syncState.lastSyncTime != null) {
+      final formatter = DateFormat('dd/MM/yyyy HH:mm');
+      return 'Última sincronización: ${formatter.format(syncState.lastSyncTime!)}';
+    }
+    return syncState.message ?? 'No sincronizado';
+  }
+
+  Widget _buildSyncIndicator(WidgetRef ref) {
+    final syncState = ref.watch(syncNotifierProvider);
+    switch (syncState.status) {
+      case SyncStatus.syncing:
+        return const SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        );
+      case SyncStatus.success:
+        return const Icon(Icons.check_circle, color: Colors.green);
+      case SyncStatus.error:
+        return const Icon(Icons.error, color: Colors.red);
+      default:
+        return const Icon(Icons.sync);
+    }
   }
 }
