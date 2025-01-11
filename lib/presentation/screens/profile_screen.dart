@@ -126,15 +126,16 @@ class ProfileScreen extends ConsumerWidget {
         ),
 
         /// Sync
-        ListTile(
-          leading: const Icon(Icons.sync),
-          title: const Text('Sincronizar'),
-          subtitle: Text(_getSyncStatusText(ref)),
-          trailing: _buildSyncIndicator(ref),
-          onTap: () {
-            ref.read(syncNotifierProvider.notifier).syncFromRemote();
-          },
-        ),
+        if (authState.user != null)
+          ListTile(
+            leading: const Icon(Icons.sync),
+            title: const Text('Sincronizar'),
+            subtitle: Text(_getSyncStatusText(ref)),
+            trailing: _buildSyncIndicator(ref),
+            onTap: () {
+              ref.read(syncNotifierProvider.notifier).syncFromRemote();
+            },
+          ),
 
         // Notifications Settings
         ListTile(
