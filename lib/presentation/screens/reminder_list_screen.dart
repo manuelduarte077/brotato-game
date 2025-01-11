@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../application/providers/filter_providers.dart';
-import '../widgets/filter_dialog.dart';
 import '../widgets/reminder_card.dart';
 import 'create_reminder_screen.dart';
 
@@ -14,20 +13,6 @@ class ReminderListScreen extends ConsumerWidget {
     final filterState = ref.watch(filterStateProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Reminders'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => const FilterDialog(),
-              );
-            },
-          ),
-        ],
-      ),
       body: Column(
         children: [
           Padding(

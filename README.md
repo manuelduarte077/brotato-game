@@ -21,7 +21,10 @@
 - Autenticación con Google:
   Información del perfil: Ver información básica del perfil del usuario (nombre, correo electrónico, foto de perfil).
 
-Reportes con Gráficos:
+- Profile Screen
+  
+
+- Reportes con Gráficos:
   Mostrar graficos, cual son los pagos mas altos, tiempo de antiguedad
 
 - Notificaciones:
