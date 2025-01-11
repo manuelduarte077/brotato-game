@@ -1,44 +1,42 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'firebase_options.dart';
+import 'presentation/screens/reminder_list_screen.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'infrastructure/services/notification_service.dart';
 
-part 'main.g.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-// We create a "provider", which will store a value (here "Hello world").
-// By using a provider, this allows us to mock/override the value exposed.
-@riverpod
-String helloWorld(Ref ref) {
-  return 'Hello world';
-}
+  // Initialize timezone database
+  tz.initializeTimeZones();
 
-void main() {
+  // Initialize notifications
+  await NotificationService().init();
+
   runApp(
-    // For widgets to be able to read providers, we need to wrap the entire
-    // application in a "ProviderScope" widget.
-    // This is where the state of our providers will be stored.
-    ProviderScope(
+    const ProviderScope(
       child: MyApp(),
     ),
   );
 }
 
-// Extend HookConsumerWidget instead of HookWidget, which is exposed by Riverpod
-class MyApp extends HookConsumerWidget {
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // We can use hooks inside HookConsumerWidget
-    final counter = useState(0);
-
-    final String value = ref.watch(helloWorldProvider);
-
+  Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Example')),
-        body: Center(
-          child: Text('$value ${counter.value}'),
-        ),
+      title: 'Reminder App',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
       ),
+      home: const ReminderListScreen(),
     );
   }
 }
