@@ -1,0 +1,10 @@
+import '../models/reminder.dart';
+
+abstract class ReminderRepository {
+  Future<List<Reminder>> getAllReminders();
+  Future<Reminder?> getReminder(int id);
+  Future<void> createReminder(Reminder reminder);
+  Future<void> updateReminder(Reminder reminder);
+  Future<void> deleteReminder(int id);
+  Stream<List<Reminder>> watchReminders();
+}
