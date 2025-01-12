@@ -1,16 +1,43 @@
 # pay_reminder
 
-Pay eminder
+## Features
 
-## Getting Started
+- Creación de recordatorios:
+  Agregar nuevos pagos con detalles como monto, fecha de vencimiento, descripción y categoría.
+  Establecer recordatorios recurrentes (semanales, mensuales, anuales).
 
-This project is a starting point for a Flutter application.
+- Listas de pagos:
+  Organizar los pagos en diferentes listas (por categoría, proveedor, etc.).
+  Priorizar pagos importantes.
 
-A few resources to get you started if this is your first Flutter project:
+- Calendario de pagos:
+  Visualizar todos los pagos programados en un calendario.
+  Identificar rápidamente los pagos próximos.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Compartir pagos:
+  Compartir pagos con otras personas (por ejemplo, compañeros de piso).
+  Realizar pagos grupales.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Autenticación con Google:
+  Información del perfil: Ver información básica del perfil del usuario (nombre, correo electrónico, foto de perfil).
+
+- Profile Screen
+  Opciones para cambiar el idioma, tema
+  Saber si esta autenticado, para asi poder guardar de manera online
+  Perfil del usuario, si tiene cuenta mostrar la foto de google
+  Agregar Categorias
+  Lista Notificaciones(Locales, Remotas(Push))
+  Cerrar session si esta logueado
+
+  
+
+- Reportes con Gráficos:
+  Mostrar graficos, cual son los pagos mas altos, tiempo de antiguedad
+
+- Notificaciones:
+  Recibir recordatorios a través de notificaciones push, correo electrónico o SMS.
+  Personalizar la frecuencia de las notificaciones (días antes de la fecha de vencimiento).
+
+- Personalización:
+  Elegir entre diferentes temas
+  Elegir diferentes idiomas
