@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../application/providers/auth_providers.dart';
 import '../application/providers/theme_provider.dart';
@@ -28,12 +29,14 @@ class MyApp extends ConsumerWidget {
           primary: Colors.indigo,
           secondary: Colors.indigoAccent,
         ),
+        fontFamily: GoogleFonts.ubuntu().fontFamily,
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.dark(
           primary: Colors.indigo.shade200,
           secondary: Colors.indigoAccent.shade200,
         ),
+        fontFamily: GoogleFonts.ubuntu().fontFamily,
       ),
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
     );

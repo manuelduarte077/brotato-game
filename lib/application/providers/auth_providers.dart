@@ -60,6 +60,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   // Método para verificar si hay una sesión activa
   Future<void> checkAuthState() async {
     final currentUser = _auth.currentUser;
+
     if (currentUser != null) {
       await currentUser.reload();
       state = state.copyWith(user: _auth.currentUser);

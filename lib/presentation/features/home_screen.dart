@@ -1,9 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'calendar/calendar_screen.dart';
 import 'profile/profile_screen.dart';
 import 'reminders/reminder_list_screen.dart';
-import '../widgets/filter_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,25 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Pay Reminder',
-          style: TextStyle(
-            fontSize: 20,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => const FilterDialog(),
-              );
-            },
-          ),
-        ],
-      ),
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -53,15 +34,16 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.list),
+            icon: Icon(CupertinoIcons.list_bullet),
             label: 'List',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
+            icon: Icon(CupertinoIcons.calendar),
             label: 'Calendar',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            key: const Key('profile_button'),
+            icon: Icon(CupertinoIcons.person),
             label: 'Profile',
           ),
         ],
