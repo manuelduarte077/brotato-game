@@ -48,7 +48,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   return Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16),
                         child: TableCalendar(
                           firstDay: DateTime.now()
                               .subtract(const Duration(days: 365)),
@@ -78,6 +78,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                 [];
                           },
                           calendarStyle: CalendarStyle(
+                            markerSize: 8,
                             markersMaxCount: 4,
                             markerDecoration: BoxDecoration(
                               color: Theme.of(context).primaryColor,
@@ -104,7 +105,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           ),
                         ),
                       ),
-                      const Divider(height: 1),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -114,7 +114,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           children: [
                             Text(
                               'Upcoming Reminders',
-                              style: Theme.of(context).textTheme.titleMedium,
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
                           ],
                         ),
@@ -135,7 +135,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   void _showRemindersDialog(BuildContext context, List<Reminder> reminders) {
-    showDialog(
+    showAdaptiveDialog(
       context: context,
       builder: (context) => Dialog(
         shape: RoundedRectangleBorder(
@@ -148,41 +148,35 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             children: [
               Text(
                 'Reminders for ${DateFormat('MMM d, yyyy').format(_selectedDay!)}',
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 16),
-              ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.6,
+              ListView.separated(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: reminders.length,
+                separatorBuilder: (_, __) => const Divider(
+                  color: Colors.grey,
                 ),
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: reminders.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
-                  itemBuilder: (context, index) {
-                    final reminder = reminders[index];
+                itemBuilder: (context, index) {
+                  final reminder = reminders[index];
 
-                    return ListTile(
-                      title: Text(
-                        reminder.title,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(
-                        'Amount: \$${reminder.amount.toStringAsFixed(2)}\n'
-                        '${reminder.description ?? ""}',
-                      ),
-                      leading: CircleAvatar(
-                        backgroundColor: Theme.of(context)
-                            .primaryColor
-                            .withValues(alpha: 0.1),
-                        child: Icon(
-                          Icons.event_note,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(
+                      reminder.title,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      'Amount: \$${reminder.amount.toStringAsFixed(2)}\n'
+                      '${reminder.description ?? ""}',
+                    ),
+                    leading: Icon(
+                      Icons.event_note,
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 8),
               TextButton(
@@ -265,13 +259,8 @@ class _RemindersList extends StatelessWidget {
               'Due: ${DateFormat('MMM d, yyyy').format(reminder.dueDate)}\n'
               'Amount: \$${reminder.amount.toStringAsFixed(2)}',
             ),
-            leading: CircleAvatar(
-              backgroundColor:
-                  Theme.of(context).primaryColor.withValues(alpha: 0.1),
-              child: Icon(
-                Icons.event,
-                color: Theme.of(context).primaryColor,
-              ),
+            leading: Icon(
+              Icons.event,
             ),
           ),
         );
