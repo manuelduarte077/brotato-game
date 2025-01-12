@@ -21,85 +21,148 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   Widget build(BuildContext context) {
     final reminders = ref.watch(remindersStreamProvider);
 
-    return reminders.when(
-      data: (reminderList) {
-        final events = _createEventsMap(reminderList);
+    return Scaffold(
+      body: SafeArea(
+        child: reminders.when(
+          data: (reminderList) {
+            final events = _createEventsMap(reminderList);
 
-        return Column(
-          children: [
-            TableCalendar(
-              firstDay: DateTime.now().subtract(const Duration(days: 365)),
-              lastDay: DateTime.now().add(const Duration(days: 365)),
-              focusedDay: _focusedDay,
-              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TableCalendar(
+                    firstDay:
+                        DateTime.now().subtract(const Duration(days: 365)),
+                    lastDay: DateTime.now().add(const Duration(days: 365)),
+                    focusedDay: _focusedDay,
+                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                    onDaySelected: (selectedDay, focusedDay) {
+                      setState(() {
+                        _selectedDay = selectedDay;
+                        _focusedDay = focusedDay;
+                      });
 
-                // Mostrar reminders del día seleccionado
-                final dayReminders = events[DateTime(selectedDay.year,
-                        selectedDay.month, selectedDay.day)] ??
-                    [];
-                if (dayReminders.isNotEmpty) {
-                  _showRemindersDialog(context, dayReminders);
-                }
-              },
-              eventLoader: (day) {
-                return events[DateTime(day.year, day.month, day.day)] ?? [];
-              },
-              calendarStyle: const CalendarStyle(
-                markersMaxCount: 3,
-                markerDecoration: BoxDecoration(
-                  color: Colors.blue,
-                  shape: BoxShape.circle,
+                      final dayReminders = events[DateTime(selectedDay.year,
+                              selectedDay.month, selectedDay.day)] ??
+                          [];
+                      if (dayReminders.isNotEmpty) {
+                        _showRemindersDialog(context, dayReminders);
+                      }
+                    },
+                    eventLoader: (day) {
+                      return events[DateTime(day.year, day.month, day.day)] ??
+                          [];
+                    },
+                    calendarStyle: CalendarStyle(
+                      markersMaxCount: 4,
+                      markerDecoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        shape: BoxShape.circle,
+                      ),
+                      selectedDecoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        shape: BoxShape.circle,
+                      ),
+                      todayDecoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .primaryColor
+                            .withValues(alpha: 0.3),
+                        shape: BoxShape.circle,
+                      ),
+                      weekendTextStyle: const TextStyle(color: Colors.red),
+                    ),
+                    headerStyle: HeaderStyle(
+                      formatButtonVisible: false,
+                      titleCentered: true,
+                      titleTextStyle: Theme.of(context).textTheme.titleLarge!,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const Divider(),
-            Expanded(
-              child: _RemindersList(reminders: reminderList),
-            ),
-          ],
-        );
-      },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(child: Text('Error: $error')),
+                const Divider(height: 1),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Upcoming Reminders',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: _RemindersList(reminders: reminderList),
+                ),
+              ],
+            );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('Error: $error')),
+        ),
+      ),
     );
   }
 
   void _showRemindersDialog(BuildContext context, List<Reminder> reminders) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Reminders for ${DateFormat('MMM d, yyyy').format(_selectedDay!)}',
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
         ),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: reminders.length,
-            itemBuilder: (context, index) {
-              final reminder = reminders[index];
-              return ListTile(
-                title: Text(reminder.title),
-                subtitle: Text(
-                  'Amount: \$${reminder.amount.toStringAsFixed(2)}\n'
-                  '${reminder.description ?? ""}',
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Reminders for ${DateFormat('MMM d, yyyy').format(_selectedDay!)}',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 16),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.6,
                 ),
-                leading: const Icon(Icons.event_note),
-              );
-            },
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: reminders.length,
+                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  itemBuilder: (context, index) {
+                    final reminder = reminders[index];
+
+                    return ListTile(
+                      title: Text(
+                        reminder.title,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        'Amount: \$${reminder.amount.toStringAsFixed(2)}\n'
+                        '${reminder.description ?? ""}',
+                      ),
+                      leading: CircleAvatar(
+                        backgroundColor: Theme.of(context)
+                            .primaryColor
+                            .withValues(alpha: 0.1),
+                        child: Icon(
+                          Icons.event_note,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Close'),
+              ),
+            ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
       ),
     );
   }
@@ -138,17 +201,38 @@ class _RemindersList extends StatelessWidget {
         .toList()
       ..sort((a, b) => a.dueDate.compareTo(b.dueDate));
 
-    return ListView.builder(
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: upcomingReminders.length,
+      separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (context, index) {
         final reminder = upcomingReminders[index];
-        return ListTile(
-          title: Text(reminder.title),
-          subtitle: Text(
-            'Due: ${DateFormat('MMM d, yyyy').format(reminder.dueDate)}\n'
-            'Amount: \$${reminder.amount.toStringAsFixed(2)}',
+
+        return Card(
+          elevation: 0,
+          color: Theme.of(context)
+              .colorScheme
+              .surfaceContainerHighest
+              .withValues(alpha: 0.3),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(16),
+            title: Text(
+              reminder.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(
+              'Due: ${DateFormat('MMM d, yyyy').format(reminder.dueDate)}\n'
+              'Amount: \$${reminder.amount.toStringAsFixed(2)}',
+            ),
+            leading: CircleAvatar(
+              backgroundColor:
+                  Theme.of(context).primaryColor.withValues(alpha: 0.1),
+              child: Icon(
+                Icons.event,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
           ),
-          leading: const Icon(Icons.event),
         );
       },
     );

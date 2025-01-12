@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app/app.dart';
 import 'firebase_options.dart';
 import 'package:timezone/data/latest.dart' as tz;
-
 import 'infrastructure/services/notification_service.dart';
 
 void main() async {
