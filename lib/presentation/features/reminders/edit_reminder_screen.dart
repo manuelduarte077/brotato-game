@@ -14,11 +14,8 @@ class EditReminderScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Reminder'),
-      ),
-      body: ReminderForm(
+    return Material(
+      child: ReminderForm(
         initialReminder: reminder,
         onSubmit: (title, amount, dueDate, category, description, isRecurring,
             recurrenceType, recurrenceInterval) {

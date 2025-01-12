@@ -76,6 +76,14 @@ class _ReminderFormState extends State<ReminderForm> {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          Text(
+            'Que pago quieres recordar',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10),
           TextFormField(
             controller: _titleController,
             decoration: const InputDecoration(
