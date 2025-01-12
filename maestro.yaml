@@ -1,0 +1,7 @@
+androidArgs:
+  permissions:
+    - "android.permission.POST_NOTIFICATIONS"
+
+iosArgs:
+  permissions:
+    - notifications 

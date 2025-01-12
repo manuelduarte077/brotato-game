@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "dev.donmanuel" "\0"
-            VALUE "FileDescription", "pay_reminder" "\0"
+            VALUE "CompanyName", "manuelduarte077" "\0"
+            VALUE "FileDescription", "Monthly" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "pay_reminder" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 dev.donmanuel. All rights reserved." "\0"
-            VALUE "OriginalFilename", "pay_reminder.exe" "\0"
-            VALUE "ProductName", "pay_reminder" "\0"
+            VALUE "InternalName", "Monthly" "\0"
+            VALUE "LegalCopyright", "Copyright © 2025 manuelduarte077. All rights reserved." "\0"
+            VALUE "OriginalFilename", "monthly-payments-win32.exe" "\0"
+            VALUE "ProductName", "Monthly" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

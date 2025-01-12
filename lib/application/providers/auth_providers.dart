@@ -60,6 +60,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   // Método para verificar si hay una sesión activa
   Future<void> checkAuthState() async {
     final currentUser = _auth.currentUser;
+
     if (currentUser != null) {
       await currentUser.reload();
       state = state.copyWith(user: _auth.currentUser);
@@ -69,41 +70,20 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> signInWithGoogle() async {
     try {
       state = state.copyWith(isLoading: true, error: null);
+      final userCredential = await _signInWithGoogle();
+      state = state.copyWith(user: userCredential.user);
 
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        throw 'Sign in aborted by user';
-      }
+      // Asegurar que los providers estén listos
+      await Future.delayed(const Duration(milliseconds: 500));
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      if (kIsWeb) {
-        await _auth.setPersistence(Persistence.LOCAL);
-      }
-
-      final userCredential = await _auth.signInWithCredential(credential);
-
-      if (userCredential.user != null) {
-        await _ref.read(syncNotifierProvider.notifier).syncFromRemote();
-      }
-
-      print('Usuario autenticado: ${userCredential.user?.uid}');
-      state = state.copyWith(
-        isLoading: false,
-        user: userCredential.user,
-      );
+      // Trigger sync
+      final syncNotifier = _ref.read(syncNotifierProvider.notifier);
+      await syncNotifier.syncFromRemote();
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
-      print('Error al iniciar sesión con Google: $e');
+      print('Error in signInWithGoogle: $e');
+      state = state.copyWith(error: e.toString());
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
 
@@ -127,6 +107,24 @@ class AuthNotifier extends StateNotifier<AuthState> {
         error: e.toString(),
       );
       print('Error al cerrar sesión: $e');
+    }
+  }
+
+  Future<UserCredential> _signInWithGoogle() async {
+    if (kIsWeb) {
+      GoogleAuthProvider googleProvider = GoogleAuthProvider();
+      return await _auth.signInWithPopup(googleProvider);
+    } else {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      return await _auth.signInWithCredential(credential);
     }
   }
 }

@@ -1,0 +1,5 @@
+appId: dev.donmanuel.pay_reminder
+---
+- launchApp
+- tapOn: Search reminders...
+- inputText: testing

@@ -16,46 +16,35 @@ class HybridReminderRepository implements ReminderRepository {
 
   Future<void> syncFromRemote() async {
     try {
-      // Obtener recordatorios locales y remotos
       final localReminders = await _localRepository.getAllReminders();
       final remoteReminders = await _remoteRepository.getAllReminders();
 
       print(
-          'Syncing: Local(${localReminders.length}) Remote(${remoteReminders.length})');
+          'Syncing - Local: ${localReminders.length}, Remote: ${remoteReminders.length}');
 
-      // Crear mapas para búsqueda eficiente
-      final localMap = {for (var r in localReminders) r.id: r};
-      final remoteMap = {for (var r in remoteReminders) r.id: r};
-
-      // Sincronizar locales a remoto
-      for (final localReminder in localReminders) {
-        if (localReminder.id == null) continue;
-
-        final remoteVersion = remoteMap[localReminder.id];
-        if (remoteVersion == null) {
-          // No existe en remoto, crear
+      // 1. Sincronizar locales no sincronizados a remoto
+      for (final localReminder in localReminders.where((r) => !r.isSynced)) {
+        try {
           await _remoteRepository.createReminder(localReminder);
-        } else if (localReminder.updatedAt.isAfter(remoteVersion.updatedAt)) {
-          // Local más reciente, actualizar remoto
-          await _remoteRepository.updateReminder(localReminder);
+          await _localRepository
+              .updateReminder(localReminder.copyWith(isSynced: true));
+        } catch (e) {
+          print('Error syncing local reminder: $e');
         }
       }
 
-      // Sincronizar remotos a local
+      // 2. Sincronizar remotos a local
       for (final remoteReminder in remoteReminders) {
-        if (remoteReminder.id == null) continue;
+        try {
+          localReminders.firstWhere((local) => local.id == remoteReminder.id,
+              orElse: () => remoteReminder);
 
-        final localVersion = localMap[remoteReminder.id];
-        if (localVersion == null) {
-          // No existe en local, crear
-          await _localRepository.createReminder(remoteReminder);
-        } else if (remoteReminder.updatedAt.isAfter(localVersion.updatedAt)) {
-          // Remoto más reciente, actualizar local
-          await _localRepository.updateReminder(remoteReminder);
+          await _localRepository
+              .createOrUpdateReminder(remoteReminder.copyWith(isSynced: true));
+        } catch (e) {
+          print('Error syncing remote reminder: $e');
         }
       }
-
-      print('Sync completed successfully');
     } catch (e) {
       print('Error in syncFromRemote: $e');
       rethrow;
@@ -64,14 +53,28 @@ class HybridReminderRepository implements ReminderRepository {
 
   @override
   Future<void> createReminder(Reminder reminder) async {
-    // Crear en local primero
-    await _localRepository.createReminder(reminder);
-
-    // Intentar respaldar en remoto
     try {
-      await _remoteRepository.createReminder(reminder);
+      // Crear en local primero
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final localReminder =
+          reminder.copyWith(id: reminder.id ?? timestamp, isSynced: false);
+
+      await _localRepository.createReminder(localReminder);
+      print('Created reminder locally with ID: ${localReminder.id}');
+
+      // Intentar respaldar en remoto
+      try {
+        await _remoteRepository.createReminder(localReminder);
+        await _localRepository
+            .updateReminder(localReminder.copyWith(isSynced: true));
+        print('Backed up reminder to remote successfully');
+      } catch (e) {
+        print('Error backing up to remote: $e');
+        // No relanzar el error para mantener el recordatorio local
+      }
     } catch (e) {
-      print('Error backing up to remote: $e');
+      print('Error creating reminder: $e');
+      rethrow;
     }
   }
 

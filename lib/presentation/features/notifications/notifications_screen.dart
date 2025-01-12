@@ -33,7 +33,6 @@ class NotificationsScreen extends ConsumerWidget {
             title: Text('Recent Notifications'),
             subtitle: Text('History of your notifications'),
           ),
-          // Add list of recent notifications
         ],
       ),
     );

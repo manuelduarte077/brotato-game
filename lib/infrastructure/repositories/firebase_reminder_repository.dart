@@ -15,15 +15,16 @@ class FirebaseReminderRepository implements ReminderRepository {
     return {
       'userId': userId,
       'title': reminder.title,
-      'description': reminder.description,
+      'description': reminder.description ?? '',
       'amount': reminder.amount,
       'dueDate': Timestamp.fromDate(reminder.dueDate),
       'category': reminder.category,
       'isRecurring': reminder.isRecurring,
-      'recurrenceType': reminder.recurrenceType,
-      'recurrenceInterval': reminder.recurrenceInterval,
+      'recurrenceType': reminder.recurrenceType ?? '',
+      'recurrenceInterval': reminder.recurrenceInterval ?? 0,
       'createdAt': Timestamp.fromDate(reminder.createdAt),
       'updatedAt': Timestamp.fromDate(reminder.updatedAt),
+      'isSynced': reminder.isSynced,
     };
   }
 
@@ -44,28 +45,53 @@ class FirebaseReminderRepository implements ReminderRepository {
     );
   }
 
+  void _validateUser() {
+    if (userId == null) {
+      throw Exception('No authenticated user found');
+    }
+  }
+
+  bool _isOwner(Map<String, dynamic> data) {
+    return data['userId'] == userId;
+  }
+
   @override
   Future<void> createReminder(Reminder reminder) async {
     if (userId == null) {
-      // Si no hay usuario, solo registrar y continuar
-      print('No authenticated user, skipping remote creation');
+      print('No userId available, skipping remote creation');
       return;
     }
 
-    // Asignar un ID numérico al reminder si no tiene uno
-    if (reminder.id == null) {
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
-      reminder = reminder.copyWith(id: timestamp);
-    }
+    try {
+      final reminderWithUser = reminder.copyWith(
+        userId: userId,
+        id: reminder.id ?? DateTime.now().millisecondsSinceEpoch,
+        isSynced: true,
+      );
 
-    final reminderData = _reminderToMap(reminder);
-    await _reminders.doc(reminder.id.toString()).set(reminderData);
+      final reminderData = _reminderToMap(reminderWithUser);
+      await _reminders.doc(reminderWithUser.id.toString()).set(reminderData);
+      print(
+          'Successfully created reminder in Firebase with ID: ${reminderWithUser.id}');
+    } catch (e) {
+      print('Error creating reminder in Firebase: $e');
+      rethrow;
+    }
   }
 
   @override
   Future<void> deleteReminder(int id) async {
+    _validateUser();
+
+    final doc = await _reminders.doc(id.toString()).get();
+    if (!doc.exists) return;
+
+    final data = doc.data() as Map<String, dynamic>;
+    if (!_isOwner(data)) {
+      throw Exception('Unauthorized to delete this reminder');
+    }
+
     await _reminders.doc(id.toString()).delete();
-    print('Deleted reminder with id: $id');
   }
 
   @override
@@ -73,13 +99,14 @@ class FirebaseReminderRepository implements ReminderRepository {
     if (userId == null) return [];
 
     try {
-      // Consulta simple sin ordenamiento inicialmente
       final querySnapshot =
           await _reminders.where('userId', isEqualTo: userId).get();
 
       final reminders = querySnapshot.docs.map(_mapToReminder).toList();
-      // Ordenar en memoria
+
       reminders.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+
+      print('Retrieved ${reminders.length} reminders for user $userId');
       return reminders;
     } catch (e) {
       print('Error getting reminders: $e');
@@ -89,15 +116,36 @@ class FirebaseReminderRepository implements ReminderRepository {
 
   @override
   Future<Reminder?> getReminder(int id) async {
+    _validateUser();
+
     final docSnapshot = await _reminders.doc(id.toString()).get();
     if (!docSnapshot.exists) return null;
+
+    final data = docSnapshot.data() as Map<String, dynamic>;
+    if (!_isOwner(data)) {
+      throw Exception('Unauthorized access to reminder');
+    }
+
     return _mapToReminder(docSnapshot);
   }
 
   @override
   Future<void> updateReminder(Reminder reminder) async {
-    if (reminder.id == null)
+    _validateUser();
+
+    if (reminder.id == null) {
       throw Exception('Cannot update reminder without id');
+    }
+
+    final doc = await _reminders.doc(reminder.id.toString()).get();
+    if (!doc.exists) {
+      throw Exception('Reminder not found');
+    }
+
+    final data = doc.data() as Map<String, dynamic>;
+    if (!_isOwner(data)) {
+      throw Exception('Unauthorized to update this reminder');
+    }
 
     await _reminders
         .doc(reminder.id.toString())
@@ -106,7 +154,10 @@ class FirebaseReminderRepository implements ReminderRepository {
 
   @override
   Stream<List<Reminder>> watchReminders() {
+    if (userId == null) return Stream.value([]);
+
     return _reminders
+        .where('userId', isEqualTo: userId)
         .orderBy('dueDate')
         .snapshots()
         .map((snapshot) => snapshot.docs.map(_mapToReminder).toList());

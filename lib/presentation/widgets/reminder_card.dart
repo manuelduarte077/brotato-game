@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../domain/models/reminder.dart';
-import '../screens/edit_reminder_screen.dart';
+import '../features/reminders/edit_reminder_screen.dart';
 import '../../application/providers/reminder_providers.dart';
 
 class ReminderCard extends ConsumerWidget {
@@ -19,7 +19,15 @@ class ReminderCard extends ConsumerWidget {
 
     return Card(
       child: ListTile(
-        title: Text(reminder.title),
+        title: Row(
+          children: [
+            Expanded(child: Text(reminder.title)),
+            if (reminder.isSynced)
+              const Icon(Icons.cloud_done, size: 16, color: Colors.green)
+            else
+              const Icon(Icons.cloud_off, size: 16, color: Colors.grey),
+          ],
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -43,11 +51,13 @@ class ReminderCard extends ConsumerWidget {
             IconButton(
               icon: const Icon(Icons.edit),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        EditReminderScreen(reminder: reminder),
-                  ),
+                showModalBottomSheet(
+                  context: context,
+                  showDragHandle: true,
+                  scrollControlDisabledMaxHeightRatio: 0.9,
+                  builder: (builder) {
+                    return EditReminderScreen(reminder: reminder);
+                  },
                 );
               },
             ),

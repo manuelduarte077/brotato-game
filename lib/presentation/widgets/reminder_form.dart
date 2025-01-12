@@ -48,6 +48,7 @@ class _ReminderFormState extends State<ReminderForm> {
   void initState() {
     super.initState();
     final reminder = widget.initialReminder;
+
     _titleController = TextEditingController(text: reminder?.title);
     _descriptionController = TextEditingController(text: reminder?.description);
     _amountController = TextEditingController(
@@ -70,11 +71,20 @@ class _ReminderFormState extends State<ReminderForm> {
 
   @override
   Widget build(BuildContext context) {
+    ///
     return Form(
       key: _formKey,
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          Text(
+            'Que pago quieres recordar',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 20),
           TextFormField(
             controller: _titleController,
             decoration: const InputDecoration(
