@@ -48,6 +48,7 @@ class _ReminderFormState extends State<ReminderForm> {
   void initState() {
     super.initState();
     final reminder = widget.initialReminder;
+
     _titleController = TextEditingController(text: reminder?.title);
     _descriptionController = TextEditingController(text: reminder?.description);
     _amountController = TextEditingController(
@@ -83,7 +84,7 @@ class _ReminderFormState extends State<ReminderForm> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
           TextFormField(
             controller: _titleController,
             decoration: const InputDecoration(
