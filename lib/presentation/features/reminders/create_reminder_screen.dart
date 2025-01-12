@@ -8,11 +8,8 @@ class CreateReminderScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Reminder'),
-      ),
-      body: ReminderForm(
+    return Material(
+      child: ReminderForm(
         onSubmit: (title, amount, dueDate, category, description, isRecurring,
             recurrenceType, recurrenceInterval) {
           ref.read(reminderControllerProvider).createReminder(
