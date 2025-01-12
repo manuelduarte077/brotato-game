@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../application/providers/filter_providers.dart';
@@ -13,75 +14,88 @@ class ReminderListScreen extends ConsumerWidget {
     final filteredReminders = ref.watch(filteredRemindersProvider);
     final filterState = ref.watch(filterStateProvider);
 
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: SearchBar(
-                elevation: WidgetStateProperty.all(0),
-                side: WidgetStateProperty.all(
-                  BorderSide(color: Colors.black),
-                ),
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                hintText: 'Search reminders...',
-                onChanged: (query) {
-                  ref.read(filterStateProvider.notifier).state =
-                      filterState.copyWith(searchQuery: query);
-                },
-                trailing: [
-                  IconButton(
-                    icon: const Icon(Icons.filter_list),
-                    onPressed: () {
-                      showAdaptiveDialog(
-                        context: context,
-                        builder: (context) => FilterDialog(),
-                      );
-                    },
-                  ),
-                ],
-              ),
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar.medium(
+          pinned: true,
+          title: const Text(
+            'Reminders',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
-            Expanded(
-              child: ListView.builder(
+          ),
+          floating: true,
+          actions: [
+            IconButton(
+              icon: const Icon(
+                CupertinoIcons.add_circled,
+                size: 32,
+                color: Colors.indigoAccent,
+              ),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  showDragHandle: true,
+                  scrollControlDisabledMaxHeightRatio: 0.9,
+                  builder: (context) {
+                    return CreateReminderScreen();
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: SearchBar(
+                  elevation: WidgetStateProperty.all(0),
+                  side: WidgetStateProperty.all(
+                    BorderSide(color: Colors.black),
+                  ),
+                  shape: WidgetStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  hintText: 'Search reminders...',
+                  onChanged: (query) {
+                    ref.read(filterStateProvider.notifier).state =
+                        filterState.copyWith(searchQuery: query);
+                  },
+                  trailing: [
+                    IconButton(
+                      icon: const Icon(Icons.filter_list),
+                      onPressed: () {
+                        showAdaptiveDialog(
+                          context: context,
+                          builder: (context) => FilterDialog(),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
                 itemCount: filteredReminders.length,
                 padding: const EdgeInsets.all(8),
                 itemBuilder: (context, index) {
                   final reminder = filteredReminders[index];
+
                   return ReminderCard(
                     reminder: reminder,
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        showDragHandle: true,
-                        scrollControlDisabledMaxHeightRatio: 0.9,
-                        builder: (context) {
-                          return CreateReminderScreen();
-                        },
-                      );
-                    },
                   );
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const CreateReminderScreen(),
-            ),
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
+      ],
     );
   }
 }
