@@ -40,7 +40,7 @@ class ReminderListScreen extends ConsumerWidget {
                   showDragHandle: true,
                   scrollControlDisabledMaxHeightRatio: 0.9,
                   builder: (context) {
-                    return CreateReminderScreen();
+                    return const CreateReminderScreen();
                   },
                 );
               },
@@ -87,6 +87,7 @@ class ReminderListScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(8),
                 itemBuilder: (context, index) {
                   final reminder = filteredReminders[index];
+
                   return ReminderSlidable(reminder: reminder);
                 },
               ),

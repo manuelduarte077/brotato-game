@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'calendar/calendar_screen.dart';
 import 'profile/profile_screen.dart';
 import 'reminders/reminder_list_screen.dart';
+import '../../infrastructure/services/quick_actions_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +21,16 @@ class _HomeScreenState extends State<HomeScreen> {
     const CalendarScreen(),
     const ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _initQuickActions();
+  }
+
+  Future<void> _initQuickActions() async {
+    await QuickActionsService().init(context);
+  }
 
   @override
   Widget build(BuildContext context) {
