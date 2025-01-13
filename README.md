@@ -41,3 +41,23 @@
 - Personalización:
   Elegir entre diferentes temas
   Elegir diferentes idiomas
+
+
+El recurrenceInterval generalmente se refiere al intervalo o frecuencia con la que se repite un recordatorio. Su significado específico depende del recurrenceType que se esté utilizando. Por ejemplo:
+
+Si recurrenceType es "diario" y recurrenceInterval es 12:
+  El recordatorio se repetirá cada 12 días
+Si recurrenceType es "mensual" y recurrenceInterval es 12:
+  El recordatorio se repetirá cada 12 meses (es decir, una vez al año)
+Si recurrenceType es "semanal" y recurrenceInterval es 12:
+  El recordatorio se repetirá cada 12 semanas
+Es importante notar que recurrenceInterval NO significa el número de veces que se repetirá el recordatorio, sino cada cuánto tiempo se repetirá. Es decir:
+
+  ❌ NO significa "repetir 12 veces"
+  ✅ Significa "repetir cada 12 [unidades de tiempo]"
+Por ejemplo, si configuras:
+
+```dart
+recurrenceType: "daily"
+recurrenceInterval: 3
+``
