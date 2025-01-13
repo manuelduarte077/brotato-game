@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../application/providers/auth_providers.dart';
 import '../application/providers/theme_provider.dart';
-import '../presentation/features/home_screen.dart';
+import '../presentation/routes/app_routes.dart';
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -23,7 +23,10 @@ class MyApp extends ConsumerWidget {
 
     return MaterialApp(
       title: 'Reminder App',
-      home: const HomeScreen(),
+      initialRoute: AppRoutes.home,
+      routes: AppRoutes.routes,
+      onGenerateRoute: AppRoutes.onGenerateRoute,
+      onUnknownRoute: AppRoutes.onUnknownRoute,
       theme: ThemeData(
         colorScheme: ColorScheme.light(
           primary: Color(0xff1a2e2f),
