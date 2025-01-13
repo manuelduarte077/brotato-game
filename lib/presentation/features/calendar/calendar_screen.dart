@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pay_reminder/presentation/features/reminders/show_reminder_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
-import '../../features/reminders/edit_reminder_screen.dart';
 
 import '../../../application/providers/reminder_providers.dart';
 import '../../../domain/models/reminder.dart';
@@ -234,11 +234,6 @@ class _RemindersList extends StatelessWidget {
         final reminder = upcomingReminders[index];
 
         return Card(
-          elevation: 0,
-          color: Theme.of(context)
-              .colorScheme
-              .surfaceContainerHighest
-              .withValues(alpha: 0.3),
           child: ListTile(
             onTap: () {
               showModalBottomSheet(
@@ -246,11 +241,10 @@ class _RemindersList extends StatelessWidget {
                 showDragHandle: true,
                 scrollControlDisabledMaxHeightRatio: 0.9,
                 builder: (builder) {
-                  return EditReminderScreen(reminder: reminder);
+                  return ShowReminderScreen(reminder: reminder);
                 },
               );
             },
-            contentPadding: EdgeInsets.zero,
             title: Text(
               reminder.title,
               style: const TextStyle(fontWeight: FontWeight.bold),

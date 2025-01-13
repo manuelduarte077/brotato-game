@@ -26,17 +26,28 @@ class MyApp extends ConsumerWidget {
       home: const HomeScreen(),
       theme: ThemeData(
         colorScheme: ColorScheme.light(
-          primary: Colors.indigo,
-          secondary: Colors.indigoAccent,
+          primary: Color(0xff1a2e2f),
+          onPrimary: Colors.white,
+          secondary: Color(0xff1f4546),
+          onSecondary: Colors.white,
+          surface: Colors.white,
+          onSurface: Color(0xff1a2e2f),
+          error: Color(0xffd32f2f),
+          onError: Colors.white,
         ),
-        fontFamily: GoogleFonts.ubuntu().fontFamily,
+        scaffoldBackgroundColor: Color(0xfff5f5f5),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Color(0xfff5f5f5),
+          foregroundColor: Color(0xff1a2e2f),
+        ),
+        fontFamily: GoogleFonts.montserratAlternates().fontFamily,
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.dark(
           primary: Colors.indigo.shade200,
           secondary: Colors.indigoAccent.shade200,
         ),
-        fontFamily: GoogleFonts.ubuntu().fontFamily,
+        fontFamily: GoogleFonts.montserratAlternates().fontFamily,
       ),
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
     );

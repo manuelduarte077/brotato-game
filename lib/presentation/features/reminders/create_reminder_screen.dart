@@ -8,23 +8,21 @@ class CreateReminderScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Material(
-      child: ReminderForm(
-        onSubmit: (title, amount, dueDate, category, description, isRecurring,
-            recurrenceType, recurrenceInterval) {
-          ref.read(reminderControllerProvider).createReminder(
-                title: title,
-                amount: amount,
-                dueDate: dueDate,
-                category: category,
-                description: description,
-                isRecurring: isRecurring,
-                recurrenceType: recurrenceType,
-                recurrenceInterval: recurrenceInterval,
-              );
-          Navigator.of(context).pop();
-        },
-      ),
+    return ReminderForm(
+      onSubmit: (title, amount, dueDate, category, description, isRecurring,
+          recurrenceType, recurrenceInterval) {
+        ref.read(reminderControllerProvider).createReminder(
+              title: title,
+              amount: amount,
+              dueDate: dueDate,
+              category: category,
+              description: description,
+              isRecurring: isRecurring,
+              recurrenceType: recurrenceType,
+              recurrenceInterval: recurrenceInterval,
+            );
+        Navigator.of(context).pop();
+      },
     );
   }
 }

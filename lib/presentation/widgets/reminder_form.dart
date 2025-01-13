@@ -66,7 +66,40 @@ class _ReminderFormState extends State<ReminderForm> {
     _titleController.dispose();
     _descriptionController.dispose();
     _amountController.dispose();
+
     super.dispose();
+  }
+
+  String _getHelperText(String? type, int? interval) {
+    if (type == null || interval == null) return '';
+
+    switch (type) {
+      case 'Daily':
+        return 'Se repetirá cada $interval día(s)';
+      case 'Weekly':
+        return 'Se repetirá cada $interval semana(s)';
+      case 'Monthly':
+        return 'Se repetirá cada $interval mes(es)';
+      case 'Yearly':
+        return 'Se repetirá cada $interval año(s)';
+      default:
+        return '';
+    }
+  }
+
+  String _getSuffixText(String? type) {
+    switch (type) {
+      case 'Daily':
+        return 'días';
+      case 'Weekly':
+        return 'semanas';
+      case 'Monthly':
+        return 'meses';
+      case 'Yearly':
+        return 'años';
+      default:
+        return '';
+    }
   }
 
   @override
@@ -194,12 +227,18 @@ class _ReminderFormState extends State<ReminderForm> {
             const SizedBox(height: 16),
             TextFormField(
               initialValue: _recurrenceInterval?.toString(),
-              decoration: const InputDecoration(
-                labelText: 'Recurrence Interval',
+              decoration: InputDecoration(
+                labelText: 'Intervalo de Repetición',
                 border: OutlineInputBorder(),
+                helperText:
+                    _getHelperText(_recurrenceType, _recurrenceInterval),
+                prefixIcon: Icon(Icons.repeat),
+                suffixText: _getSuffixText(_recurrenceType),
               ),
               keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ],
               onChanged: (value) {
                 setState(() {
                   _recurrenceInterval = int.tryParse(value);
@@ -208,7 +247,7 @@ class _ReminderFormState extends State<ReminderForm> {
             ),
           ],
           const SizedBox(height: 24),
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 widget.onSubmit(
@@ -225,7 +264,10 @@ class _ReminderFormState extends State<ReminderForm> {
                 );
               }
             },
-            child: const Text('Save'),
+            child: const Text(
+              'Save',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),
