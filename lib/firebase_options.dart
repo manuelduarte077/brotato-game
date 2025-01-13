@@ -41,46 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyA9V-igkP5hl-x23RroviksN5cMstbffLU',
-    appId: '1:748561237711:web:34e94d2b0029ed429719ba',
-    messagingSenderId: '748561237711',
-    projectId: 'pay-reminder-5fcd9',
-    authDomain: 'pay-reminder-5fcd9.firebaseapp.com',
-    storageBucket: 'pay-reminder-5fcd9.firebasestorage.app',
+    apiKey: 'AIzaSyD2cbyI5VpKVh4MWB778_6Uwe-XhAS5vXo',
+    appId: '1:294378450968:web:0147be21090f100bdb936d',
+    messagingSenderId: '294378450968',
+    projectId: 'neverforgettapp',
+    authDomain: 'neverforgettapp.firebaseapp.com',
+    storageBucket: 'neverforgettapp.firebasestorage.app',
+    measurementId: 'G-7VP3NLE09S',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB4vMwUYoQBadZJwzWC6ZEP8VuwLSq5zO0',
-    appId: '1:748561237711:android:2a7ebb9fc01a30049719ba',
-    messagingSenderId: '748561237711',
-    projectId: 'pay-reminder-5fcd9',
-    storageBucket: 'pay-reminder-5fcd9.firebasestorage.app',
+    apiKey: 'AIzaSyDhz-6oyUKoMtQQ8BypD15ADHStOe8KVqA',
+    appId: '1:294378450968:android:27fd68cbff5e1679db936d',
+    messagingSenderId: '294378450968',
+    projectId: 'neverforgettapp',
+    storageBucket: 'neverforgettapp.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD5lcIWGj_iUrLU0j9qX17TO72rvyG9MyI',
-    appId: '1:748561237711:ios:b6f5548c6dc865169719ba',
-    messagingSenderId: '748561237711',
-    projectId: 'pay-reminder-5fcd9',
-    storageBucket: 'pay-reminder-5fcd9.firebasestorage.app',
-    iosBundleId: 'dev.donmanuel.payReminder',
+    apiKey: 'AIzaSyBcYGcsg9EM-g5Ap8bJDZYkVn6yGM4ukII',
+    appId: '1:294378450968:ios:97a47da02b0f14f3db936d',
+    messagingSenderId: '294378450968',
+    projectId: 'neverforgettapp',
+    storageBucket: 'neverforgettapp.firebasestorage.app',
+    iosBundleId: 'dev.donmanuel.app.monthlyPayments',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD5lcIWGj_iUrLU0j9qX17TO72rvyG9MyI',
-    appId: '1:748561237711:ios:b6f5548c6dc865169719ba',
-    messagingSenderId: '748561237711',
-    projectId: 'pay-reminder-5fcd9',
-    storageBucket: 'pay-reminder-5fcd9.firebasestorage.app',
-    iosBundleId: 'dev.donmanuel.payReminder',
+    apiKey: 'AIzaSyBcYGcsg9EM-g5Ap8bJDZYkVn6yGM4ukII',
+    appId: '1:294378450968:ios:97a47da02b0f14f3db936d',
+    messagingSenderId: '294378450968',
+    projectId: 'neverforgettapp',
+    storageBucket: 'neverforgettapp.firebasestorage.app',
+    iosBundleId: 'dev.donmanuel.app.monthlyPayments',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyA9V-igkP5hl-x23RroviksN5cMstbffLU',
-    appId: '1:748561237711:web:5b48beda7d16d5e49719ba',
-    messagingSenderId: '748561237711',
-    projectId: 'pay-reminder-5fcd9',
-    authDomain: 'pay-reminder-5fcd9.firebaseapp.com',
-    storageBucket: 'pay-reminder-5fcd9.firebasestorage.app',
+    apiKey: 'AIzaSyD2cbyI5VpKVh4MWB778_6Uwe-XhAS5vXo',
+    appId: '1:294378450968:web:94d2d630b413c299db936d',
+    messagingSenderId: '294378450968',
+    projectId: 'neverforgettapp',
+    authDomain: 'neverforgettapp.firebaseapp.com',
+    storageBucket: 'neverforgettapp.firebasestorage.app',
+    measurementId: 'G-GSWZNG81XQ',
   );
+
 }
