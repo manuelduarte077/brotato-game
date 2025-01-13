@@ -31,7 +31,6 @@ class ReminderListScreen extends ConsumerWidget {
               icon: const Icon(
                 CupertinoIcons.add_circled,
                 size: 32,
-                color: Colors.indigoAccent,
               ),
               onPressed: () {
                 showModalBottomSheet(

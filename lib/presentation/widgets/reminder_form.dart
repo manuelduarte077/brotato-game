@@ -66,6 +66,7 @@ class _ReminderFormState extends State<ReminderForm> {
     _titleController.dispose();
     _descriptionController.dispose();
     _amountController.dispose();
+
     super.dispose();
   }
 
@@ -208,7 +209,7 @@ class _ReminderFormState extends State<ReminderForm> {
             ),
           ],
           const SizedBox(height: 24),
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 widget.onSubmit(
@@ -225,7 +226,10 @@ class _ReminderFormState extends State<ReminderForm> {
                 );
               }
             },
-            child: const Text('Save'),
+            child: const Text(
+              'Save',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),

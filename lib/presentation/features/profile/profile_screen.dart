@@ -5,9 +5,10 @@ import '../../../application/providers/auth_providers.dart';
 import '../../../application/providers/sync_provider.dart';
 import '../../../application/providers/theme_provider.dart';
 import '../../../application/providers/language_provider.dart';
-import '../notifications/notifications_screen.dart';
 import '../../widgets/category_management_dialog.dart';
 import 'package:intl/intl.dart';
+
+import '../notifications/notifications_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -35,6 +36,7 @@ class ProfileScreen extends ConsumerWidget {
         SliverList(
           delegate: SliverChildListDelegate(
             [
+              SizedBox(height: 10),
               if (authState.isLoading)
                 const Center(child: CircularProgressIndicator.adaptive()),
               if (authState.error != null)
@@ -44,19 +46,23 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               if (!authState.isLoading)
                 authState.user == null
-                    ? ElevatedButton(
-                        onPressed: () {
-                          ref
-                              .read(authStateProvider.notifier)
-                              .signInWithGoogle();
-                        },
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.login),
-                            SizedBox(width: 8),
-                            Text('Sign in with Google'),
-                          ],
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: FilledButton(
+                          onPressed: () {
+                            ref
+                                .read(authStateProvider.notifier)
+                                .signInWithGoogle();
+                          },
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.login),
+                              SizedBox(width: 8),
+                              Text('Sign in with Google'),
+                            ],
+                          ),
                         ),
                       )
                     : Column(
@@ -149,7 +155,7 @@ class ProfileScreen extends ConsumerWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const NotificationsScreen(),
+                      builder: (context) => NotificationsScreen(),
                     ),
                   );
                 },
