@@ -110,6 +110,7 @@ class NotificationService {
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
+
     final ios = await _notifications
         .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>()
@@ -118,6 +119,7 @@ class NotificationService {
           badge: true,
           sound: true,
         );
+
     return (android ?? false) || (ios ?? false);
   }
 }

@@ -30,13 +30,13 @@
   Cerrar session si esta logueado
 
   
-
 - Reportes con Gráficos:
   Mostrar graficos, cual son los pagos mas altos, tiempo de antiguedad
 
 - Notificaciones:
-  Recibir recordatorios a través de notificaciones push, correo electrónico o SMS.
-  Personalizar la frecuencia de las notificaciones (días antes de la fecha de vencimiento).
+  Recibir recordatorios a través de notificaciones.
+  Personalizar la frecuencia de las notificaciones (5, 2 o 1días antes de la fecha de vencimiento).
+  Lista de notificaciones, borrar notificaciones leidas (No leidas, recientes, Leidas)
 
 - Personalización:
   Elegir entre diferentes temas
