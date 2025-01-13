@@ -21,7 +21,15 @@ class ReminderCard extends ConsumerWidget {
       child: ListTile(
         title: Row(
           children: [
-            Expanded(child: Text(reminder.title)),
+            Expanded(
+              child: Text(
+                reminder.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             if (reminder.isSynced)
               const Icon(Icons.cloud_done, size: 16, color: Colors.green)
             else
@@ -67,7 +75,13 @@ class ReminderCard extends ConsumerWidget {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: const Text('Delete Reminder'),
+                    title: const Text(
+                      'Delete Reminder',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     content: const Text('Are you sure?'),
                     actions: [
                       TextButton(
@@ -81,7 +95,12 @@ class ReminderCard extends ConsumerWidget {
                               .deleteReminder(reminder.id!);
                           Navigator.pop(context);
                         },
-                        child: const Text('Delete'),
+                        child: const Text(
+                          'Delete',
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
                       ),
                     ],
                   ),

@@ -29,7 +29,7 @@ class ReminderListScreen extends ConsumerWidget {
           actions: [
             IconButton(
               icon: const Icon(
-                CupertinoIcons.add_circled,
+                CupertinoIcons.add_circled_solid,
                 size: 32,
               ),
               onPressed: () {
@@ -49,7 +49,7 @@ class ReminderListScreen extends ConsumerWidget {
           delegate: SliverChildListDelegate(
             [
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child: SearchBar(
                   elevation: WidgetStateProperty.all(0),
                   side: WidgetStateProperty.all(
