@@ -57,6 +57,7 @@ class NotificationsScreen extends ConsumerWidget {
   void _showNotificationSettings(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       builder: (context) => _NotificationSettings(),
     );
   }
@@ -69,7 +70,7 @@ class _NotificationSettings extends ConsumerWidget {
     final notificationService = NotificationService();
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(18),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,6 +81,7 @@ class _NotificationSettings extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           SwitchListTile(
+            contentPadding: EdgeInsets.zero,
             title: const Text('Enable Notifications'),
             subtitle: const Text('Receive payment reminders'),
             value: settings.localNotificationsEnabled,
@@ -87,6 +89,7 @@ class _NotificationSettings extends ConsumerWidget {
               if (value) {
                 final hasPermission =
                     await notificationService.requestPermissions();
+
                 if (!hasPermission) {
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -236,6 +239,7 @@ class _NotificationTile extends ConsumerWidget {
       BuildContext context, NotificationRecord notification) {
     showModalBottomSheet(
       context: context,
+      showDragHandle: true,
       builder: (context) => Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
