@@ -78,7 +78,6 @@ class ReminderSlidable extends ConsumerWidget {
         title: const Text(
           'Eliminar recordatorio',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
         ),
@@ -93,7 +92,6 @@ class ReminderSlidable extends ConsumerWidget {
             child: const Text(
               'Eliminar',
               style: TextStyle(
-                fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
             ),
@@ -104,7 +102,6 @@ class ReminderSlidable extends ConsumerWidget {
           child: const Text(
             'Cancelar',
             style: TextStyle(
-              fontWeight: FontWeight.bold,
               fontSize: 16,
             ),
           ),
