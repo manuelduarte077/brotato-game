@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../application/providers/filter_providers.dart';
 import '../../widgets/filter_dialog.dart';
-import '../../widgets/reminder_card.dart';
 import 'create_reminder_screen.dart';
+
+import '../../widgets/reminder_slidable.dart';
 
 class ReminderListScreen extends ConsumerWidget {
   const ReminderListScreen({super.key});
@@ -29,9 +31,8 @@ class ReminderListScreen extends ConsumerWidget {
           actions: [
             IconButton(
               icon: const Icon(
-                CupertinoIcons.add_circled,
+                CupertinoIcons.add_circled_solid,
                 size: 32,
-                color: Colors.indigoAccent,
               ),
               onPressed: () {
                 showModalBottomSheet(
@@ -39,7 +40,7 @@ class ReminderListScreen extends ConsumerWidget {
                   showDragHandle: true,
                   scrollControlDisabledMaxHeightRatio: 0.9,
                   builder: (context) {
-                    return CreateReminderScreen();
+                    return const CreateReminderScreen();
                   },
                 );
               },
@@ -50,7 +51,7 @@ class ReminderListScreen extends ConsumerWidget {
           delegate: SliverChildListDelegate(
             [
               Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8),
                 child: SearchBar(
                   elevation: WidgetStateProperty.all(0),
                   side: WidgetStateProperty.all(
@@ -79,6 +80,8 @@ class ReminderListScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+
+              /// Reminders list
               ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -87,9 +90,7 @@ class ReminderListScreen extends ConsumerWidget {
                 itemBuilder: (context, index) {
                   final reminder = filteredReminders[index];
 
-                  return ReminderCard(
-                    reminder: reminder,
-                  );
+                  return ReminderSlidable(reminder: reminder);
                 },
               ),
             ],

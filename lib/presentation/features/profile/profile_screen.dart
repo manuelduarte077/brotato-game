@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../../application/providers/auth_providers.dart';
 import '../../../application/providers/sync_provider.dart';
 import '../../../application/providers/theme_provider.dart';
 import '../../../application/providers/language_provider.dart';
-import '../notifications/notifications_screen.dart';
 import '../../widgets/category_management_dialog.dart';
 import 'package:intl/intl.dart';
+
+import '../notifications/notifications_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -35,6 +37,7 @@ class ProfileScreen extends ConsumerWidget {
         SliverList(
           delegate: SliverChildListDelegate(
             [
+              SizedBox(height: 10),
               if (authState.isLoading)
                 const Center(child: CircularProgressIndicator.adaptive()),
               if (authState.error != null)
@@ -44,19 +47,23 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               if (!authState.isLoading)
                 authState.user == null
-                    ? ElevatedButton(
-                        onPressed: () {
-                          ref
-                              .read(authStateProvider.notifier)
-                              .signInWithGoogle();
-                        },
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.login),
-                            SizedBox(width: 8),
-                            Text('Sign in with Google'),
-                          ],
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: FilledButton(
+                          onPressed: () {
+                            ref
+                                .read(authStateProvider.notifier)
+                                .signInWithGoogle();
+                          },
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.login),
+                              SizedBox(width: 8),
+                              Text('Sign in with Google'),
+                            ],
+                          ),
                         ),
                       )
                     : Column(
@@ -87,6 +94,8 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ),
 
+              /// Repo
+
               // Language Selection
               ListTile(
                 leading: const Icon(Icons.language_outlined),
@@ -94,36 +103,21 @@ class ProfileScreen extends ConsumerWidget {
                   'Language',
                   style: TextStyle(fontSize: 16),
                 ),
-                trailing: DropdownButton<String>(
-                  value: currentLanguage,
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'en',
-                      child: Text(
-                        'English',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    DropdownMenuItem(
-                      value: 'es',
-                      child: Text(
-                        'Español',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      ref.read(languageProvider.notifier).updateLanguage(value);
-                    }
-                  },
+                trailing: Text(
+                  currentLanguage == 'en' ? 'English' : 'Español',
+                  style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                 ),
+                onTap: () =>
+                    _showLanguageSelector(context, ref, currentLanguage),
               ),
 
               // Categories Management
               ListTile(
                 leading: const Icon(Icons.category_outlined),
-                title: const Text('Manage Categories'),
+                title: const Text(
+                  'Manage Categories',
+                  style: TextStyle(fontSize: 16),
+                ),
                 onTap: () {
                   _showCategoriesDialog(context, ref);
                 },
@@ -133,7 +127,10 @@ class ProfileScreen extends ConsumerWidget {
               if (authState.user != null)
                 ListTile(
                   leading: const Icon(Icons.sync_outlined),
-                  title: const Text('Sincronizar'),
+                  title: const Text(
+                    'Sincronizar',
+                    style: TextStyle(fontSize: 16),
+                  ),
                   subtitle: Text(_getSyncStatusText(ref)),
                   trailing: _buildSyncIndicator(ref),
                   onTap: () {
@@ -144,12 +141,15 @@ class ProfileScreen extends ConsumerWidget {
               // Notifications Settings
               ListTile(
                 leading: const Icon(Icons.notifications_outlined),
-                title: const Text('Notifications'),
+                title: const Text(
+                  'Notifications',
+                  style: TextStyle(fontSize: 16),
+                ),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const NotificationsScreen(),
+                      builder: (context) => NotificationsScreen(),
                     ),
                   );
                 },
@@ -178,9 +178,11 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   void _showCategoriesDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => const CategoryManagementDialog(),
+      showDragHandle: true,
+      scrollControlDisabledMaxHeightRatio: 0.9,
+      builder: (context) => const CategoryManagementBottomSheet(),
     );
   }
 
@@ -208,6 +210,72 @@ class ProfileScreen extends ConsumerWidget {
         return const Icon(Icons.error, color: Colors.red);
       default:
         return const Icon(Icons.sync);
+    }
+  }
+
+  void _showLanguageSelector(
+      BuildContext context, WidgetRef ref, String currentLanguage) {
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+      showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext context) => CupertinoActionSheet(
+          title: const Text('Select Language'),
+          actions: [
+            CupertinoActionSheetAction(
+              onPressed: () {
+                ref.read(languageProvider.notifier).updateLanguage('en');
+                Navigator.pop(context);
+              },
+              isDefaultAction: currentLanguage == 'en',
+              child: const Text('English'),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                ref.read(languageProvider.notifier).updateLanguage('es');
+                Navigator.pop(context);
+              },
+              isDefaultAction: currentLanguage == 'es',
+              child: const Text('Español'),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ),
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        showDragHandle: true,
+        builder: (BuildContext context) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text('English'),
+              leading: const Text('🇺🇸'),
+              trailing: currentLanguage == 'en'
+                  ? const Icon(Icons.check, color: Colors.blue)
+                  : null,
+              onTap: () {
+                ref.read(languageProvider.notifier).updateLanguage('en');
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Español'),
+              leading: const Text('🇪🇸'),
+              trailing: currentLanguage == 'es'
+                  ? const Icon(Icons.check, color: Colors.blue)
+                  : null,
+              onTap: () {
+                ref.read(languageProvider.notifier).updateLanguage('es');
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      );
     }
   }
 }

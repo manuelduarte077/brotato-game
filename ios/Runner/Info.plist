@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Monthly</string>
+	<string>Never Forget</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -29,14 +29,14 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.748561237711-2oe7e85l8838f4695c0591bh98tiqnkg</string>
+				<string>com.googleusercontent.apps.294378450968-e3a2uts4qc3l8tl4ln4n7pm7812d76pr</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>GIDClientID</key>
-	<string>748561237711-2oe7e85l8838f4695c0591bh98tiqnkg.apps.googleusercontent.com</string>
+	<string>294378450968-e3a2uts4qc3l8tl4ln4n7pm7812d76pr.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

@@ -1,26 +1,52 @@
 {
   "project_info": {
-    "project_number": "748561237711",
-    "project_id": "pay-reminder-5fcd9",
-    "storage_bucket": "pay-reminder-5fcd9.firebasestorage.app"
+    "project_number": "294378450968",
+    "project_id": "neverforgettapp",
+    "storage_bucket": "neverforgettapp.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:748561237711:android:2a7ebb9fc01a30049719ba",
+        "mobilesdk_app_id": "1:294378450968:android:27fd68cbff5e1679db936d",
         "android_client_info": {
-          "package_name": "dev.donmanuel.pay_reminder"
+          "package_name": "dev.donmanuel.app.monthly_payments"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "294378450968-coia6ou9kiv2o9psth7rcses7bgvhpm7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.donmanuel.app.monthly_payments",
+            "certificate_hash": "dab58488cb2611379b499a90997fd7e6d0a0bea6"
+          }
+        },
+        {
+          "client_id": "294378450968-rd748sh35od0tak63asn95l38a7itvd6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyB4vMwUYoQBadZJwzWC6ZEP8VuwLSq5zO0"
+          "current_key": "AIzaSyDhz-6oyUKoMtQQ8BypD15ADHStOe8KVqA"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "294378450968-rd748sh35od0tak63asn95l38a7itvd6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "294378450968-e3a2uts4qc3l8tl4ln4n7pm7812d76pr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "dev.donmanuel.app.monthlyPayments",
+                "app_store_id": "6740448822"
+              }
+            }
+          ]
         }
       }
     }

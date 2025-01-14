@@ -7,6 +7,8 @@ import '../database_provider.dart';
 import '../providers/auth_providers.dart';
 import '../../domain/models/reminder.dart';
 import 'firebase_providers.dart';
+import 'package:flutter/foundation.dart';
+import '../../infrastructure/services/notification_service.dart';
 
 final reminderRepositoryProvider = Provider<ReminderRepository>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -36,8 +38,10 @@ final reminderControllerProvider = Provider((ref) {
 
 class ReminderController {
   final ReminderRepository _repository;
+  final NotificationService _notificationService;
 
-  ReminderController(this._repository);
+  ReminderController(this._repository)
+      : _notificationService = NotificationService();
 
   Future<void> createReminder({
     required String title,
@@ -49,20 +53,22 @@ class ReminderController {
     String? recurrenceType,
     int? recurrenceInterval,
   }) async {
-    final reminder = Reminder(
-      title: title,
-      amount: amount,
-      dueDate: dueDate,
-      category: category,
-      description: description,
-      isRecurring: isRecurring,
-      recurrenceType: recurrenceType,
-      recurrenceInterval: recurrenceInterval,
-    );
-
     try {
+      final reminder = Reminder(
+        title: title,
+        amount: amount,
+        dueDate: dueDate,
+        category: category,
+        description: description,
+        isRecurring: isRecurring,
+        recurrenceType: recurrenceType,
+        recurrenceInterval: recurrenceInterval,
+      );
+
       await _repository.createReminder(reminder);
+      await _notificationService.scheduleReminderNotification(reminder);
     } catch (e) {
+      debugPrint('Error creating reminder: $e');
       throw Exception('Error creating reminder: $e');
     }
   }
@@ -70,7 +76,13 @@ class ReminderController {
   Future<void> updateReminder(Reminder reminder) async {
     try {
       await _repository.updateReminder(reminder);
+      // Cancelar notificaciones existentes y programar nuevas
+      if (reminder.id != null) {
+        await _notificationService.cancelReminderNotifications(reminder.id!);
+      }
+      await _notificationService.scheduleReminderNotification(reminder);
     } catch (e) {
+      debugPrint('Error updating reminder: $e');
       throw Exception('Error updating reminder: $e');
     }
   }
@@ -78,7 +90,9 @@ class ReminderController {
   Future<void> deleteReminder(int id) async {
     try {
       await _repository.deleteReminder(id);
+      await _notificationService.cancelReminderNotifications(id);
     } catch (e) {
+      debugPrint('Error deleting reminder: $e');
       throw Exception('Error deleting reminder: $e');
     }
   }

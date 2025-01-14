@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../application/providers/auth_providers.dart';
 import '../application/providers/theme_provider.dart';
-import '../presentation/features/home_screen.dart';
+import '../presentation/routes/app_routes.dart';
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -23,20 +23,34 @@ class MyApp extends ConsumerWidget {
 
     return MaterialApp(
       title: 'Reminder App',
-      home: const HomeScreen(),
+      initialRoute: AppRoutes.home,
+      routes: AppRoutes.routes,
+      onGenerateRoute: AppRoutes.onGenerateRoute,
+      onUnknownRoute: AppRoutes.onUnknownRoute,
       theme: ThemeData(
         colorScheme: ColorScheme.light(
-          primary: Colors.indigo,
-          secondary: Colors.indigoAccent,
+          primary: Color(0xff1a2e2f),
+          onPrimary: Colors.white,
+          secondary: Color(0xff1f4546),
+          onSecondary: Colors.white,
+          surface: Colors.white,
+          onSurface: Color(0xff1a2e2f),
+          error: Color(0xffd32f2f),
+          onError: Colors.white,
         ),
-        fontFamily: GoogleFonts.ubuntu().fontFamily,
+        scaffoldBackgroundColor: Color(0xfff5f5f5),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Color(0xfff5f5f5),
+          foregroundColor: Color(0xff1a2e2f),
+        ),
+        fontFamily: GoogleFonts.montserratAlternates().fontFamily,
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.dark(
           primary: Colors.indigo.shade200,
           secondary: Colors.indigoAccent.shade200,
         ),
-        fontFamily: GoogleFonts.ubuntu().fontFamily,
+        fontFamily: GoogleFonts.montserratAlternates().fontFamily,
       ),
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
     );

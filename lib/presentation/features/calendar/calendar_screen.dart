@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
-import '../../features/reminders/edit_reminder_screen.dart';
 
 import '../../../application/providers/reminder_providers.dart';
 import '../../../domain/models/reminder.dart';
+import '../reminders/show_reminder_screen.dart';
 
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
@@ -22,115 +22,117 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   Widget build(BuildContext context) {
     final reminders = ref.watch(remindersStreamProvider);
 
-    return CustomScrollView(
-      slivers: [
-        ///
-        SliverAppBar(
-          pinned: true,
-          title: Text(
-            'Calendar',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+    return Material(
+      child: CustomScrollView(
+        slivers: [
+          ///
+          SliverAppBar(
+            pinned: true,
+            title: Text(
+              'Calendar',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            floating: true,
+          ),
+
+          ///
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                reminders.when(
+                  data: (reminderList) {
+                    final events = _createEventsMap(reminderList);
+
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: TableCalendar(
+                            firstDay: DateTime.now()
+                                .subtract(const Duration(days: 365)),
+                            lastDay:
+                                DateTime.now().add(const Duration(days: 365)),
+                            focusedDay: _focusedDay,
+                            selectedDayPredicate: (day) =>
+                                isSameDay(_selectedDay, day),
+                            onDaySelected: (selectedDay, focusedDay) {
+                              setState(() {
+                                _selectedDay = selectedDay;
+                                _focusedDay = focusedDay;
+                              });
+
+                              final dayReminders = events[DateTime(
+                                      selectedDay.year,
+                                      selectedDay.month,
+                                      selectedDay.day)] ??
+                                  [];
+                              if (dayReminders.isNotEmpty) {
+                                _showRemindersDialog(context, dayReminders);
+                              }
+                            },
+                            eventLoader: (day) {
+                              return events[
+                                      DateTime(day.year, day.month, day.day)] ??
+                                  [];
+                            },
+                            calendarStyle: CalendarStyle(
+                              markerSize: 8,
+                              markersMaxCount: 4,
+                              markerDecoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                shape: BoxShape.circle,
+                              ),
+                              selectedDecoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                shape: BoxShape.circle,
+                              ),
+                              todayDecoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withValues(alpha: 0.3),
+                                shape: BoxShape.circle,
+                              ),
+                              weekendTextStyle:
+                                  const TextStyle(color: Colors.red),
+                            ),
+                            headerStyle: HeaderStyle(
+                              formatButtonVisible: false,
+                              titleCentered: true,
+                              titleTextStyle:
+                                  Theme.of(context).textTheme.titleLarge!,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Upcoming Reminders',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ],
+                          ),
+                        ),
+                        _RemindersList(reminders: reminderList),
+                      ],
+                    );
+                  },
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator.adaptive()),
+                  error: (error, stack) => Center(child: Text('Error: $error')),
+                ),
+              ],
             ),
           ),
-          floating: true,
-        ),
-
-        ///
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              reminders.when(
-                data: (reminderList) {
-                  final events = _createEventsMap(reminderList);
-
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: TableCalendar(
-                          firstDay: DateTime.now()
-                              .subtract(const Duration(days: 365)),
-                          lastDay:
-                              DateTime.now().add(const Duration(days: 365)),
-                          focusedDay: _focusedDay,
-                          selectedDayPredicate: (day) =>
-                              isSameDay(_selectedDay, day),
-                          onDaySelected: (selectedDay, focusedDay) {
-                            setState(() {
-                              _selectedDay = selectedDay;
-                              _focusedDay = focusedDay;
-                            });
-
-                            final dayReminders = events[DateTime(
-                                    selectedDay.year,
-                                    selectedDay.month,
-                                    selectedDay.day)] ??
-                                [];
-                            if (dayReminders.isNotEmpty) {
-                              _showRemindersDialog(context, dayReminders);
-                            }
-                          },
-                          eventLoader: (day) {
-                            return events[
-                                    DateTime(day.year, day.month, day.day)] ??
-                                [];
-                          },
-                          calendarStyle: CalendarStyle(
-                            markerSize: 8,
-                            markersMaxCount: 4,
-                            markerDecoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                            selectedDecoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                            todayDecoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withValues(alpha: 0.3),
-                              shape: BoxShape.circle,
-                            ),
-                            weekendTextStyle:
-                                const TextStyle(color: Colors.red),
-                          ),
-                          headerStyle: HeaderStyle(
-                            formatButtonVisible: false,
-                            titleCentered: true,
-                            titleTextStyle:
-                                Theme.of(context).textTheme.titleLarge!,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        child: Row(
-                          children: [
-                            Text(
-                              'Upcoming Reminders',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                          ],
-                        ),
-                      ),
-                      _RemindersList(reminders: reminderList),
-                    ],
-                  );
-                },
-                loading: () =>
-                    const Center(child: CircularProgressIndicator.adaptive()),
-                error: (error, stack) => Center(child: Text('Error: $error')),
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -234,11 +236,6 @@ class _RemindersList extends StatelessWidget {
         final reminder = upcomingReminders[index];
 
         return Card(
-          elevation: 0,
-          color: Theme.of(context)
-              .colorScheme
-              .surfaceContainerHighest
-              .withValues(alpha: 0.3),
           child: ListTile(
             onTap: () {
               showModalBottomSheet(
@@ -246,11 +243,10 @@ class _RemindersList extends StatelessWidget {
                 showDragHandle: true,
                 scrollControlDisabledMaxHeightRatio: 0.9,
                 builder: (builder) {
-                  return EditReminderScreen(reminder: reminder);
+                  return ShowReminderScreen(reminder: reminder);
                 },
               );
             },
-            contentPadding: EdgeInsets.zero,
             title: Text(
               reminder.title,
               style: const TextStyle(fontWeight: FontWeight.bold),

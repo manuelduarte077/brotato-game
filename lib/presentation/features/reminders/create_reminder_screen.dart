@@ -8,8 +8,20 @@ class CreateReminderScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Material(
-      child: ReminderForm(
+    final isBottomSheet = ModalRoute.of(context)?.settings.name == null;
+    print('isBottomSheet: $isBottomSheet');
+
+    return Scaffold(
+      appBar: isBottomSheet
+          ? null
+          : AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              title: const Text('Create Reminder'),
+            ),
+      body: ReminderForm(
         onSubmit: (title, amount, dueDate, category, description, isRecurring,
             recurrenceType, recurrenceInterval) {
           ref.read(reminderControllerProvider).createReminder(
