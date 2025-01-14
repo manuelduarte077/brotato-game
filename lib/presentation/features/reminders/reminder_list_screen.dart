@@ -80,6 +80,8 @@ class ReminderListScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+
+              /// Reminders list
               ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
