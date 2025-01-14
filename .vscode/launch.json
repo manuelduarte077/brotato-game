@@ -5,18 +5,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "pay_reminder",
+      "name": "Never Forget",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "pay_reminder (profile mode)",
+      "name": "Never Forget (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "pay_reminder (release mode)",
+      "name": "Never Forget (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

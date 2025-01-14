@@ -16,7 +16,7 @@
 
 - Compartir pagos:
   Compartir pagos con otras personas (por ejemplo, compañeros de piso).
-  Realizar pagos grupales.
+  Poder agregar a una persona que ya este registrado su correo en firebase, entonces invitarlo a ese reminder y que el pueda verlo tambien
 
 - Autenticación con Google:
   Información del perfil: Ver información básica del perfil del usuario (nombre, correo electrónico, foto de perfil).
@@ -47,6 +47,7 @@ El recurrenceInterval generalmente se refiere al intervalo o frecuencia con la q
 
 Si recurrenceType es "diario" y recurrenceInterval es 12:
   El recordatorio se repetirá cada 12 días
+  
 Si recurrenceType es "mensual" y recurrenceInterval es 12:
   El recordatorio se repetirá cada 12 meses (es decir, una vez al año)
 Si recurrenceType es "semanal" y recurrenceInterval es 12:
