@@ -36,7 +36,27 @@ class _ReminderFormState extends State<ReminderForm> {
   String? _recurrenceType;
   int? _recurrenceInterval;
 
-  final List<String> _categories = ['Bills', 'Rent', 'Utilities', 'Other'];
+  final List<String> _categories = [
+    'Alimentos y Supermercado',
+    'Transporte y Gasolina',
+    'Servicios Básicos',
+    'Renta/Hipoteca',
+    'Salud y Medicamentos',
+    'Educación',
+    'Entretenimiento',
+    'Seguros',
+    'Préstamos y Deudas',
+    'Ahorro e Inversiones',
+    'Ropa y Calzado',
+    'Telecomunicaciones',
+    'Mascotas',
+    'Mantenimiento del Hogar',
+    'Impuestos',
+    'Suscripciones',
+    'Regalos',
+    'Otros',
+  ];
+
   final List<String> _recurrenceTypes = [
     'Daily',
     'Weekly',
@@ -54,6 +74,7 @@ class _ReminderFormState extends State<ReminderForm> {
     _amountController = TextEditingController(
       text: reminder?.amount.toString() ?? '',
     );
+
     _selectedDate = reminder?.dueDate ?? DateTime.now();
     _selectedCategory = reminder?.category ?? _categories.first;
     _isRecurring = reminder?.isRecurring ?? false;
@@ -100,6 +121,78 @@ class _ReminderFormState extends State<ReminderForm> {
       default:
         return '';
     }
+  }
+
+  void _showCategoryBottomSheet() {
+    final searchController = TextEditingController();
+    List<String> filteredCategories = List.from(_categories);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => DraggableScrollableSheet(
+          initialChildSize: 0.7,
+          minChildSize: 0.5,
+          maxChildSize: 0.9,
+          expand: false,
+          builder: (context, scrollController) => Column(
+            children: [
+              const SizedBox(height: 8),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: TextField(
+                  controller: searchController,
+                  decoration: const InputDecoration(
+                    hintText: 'Buscar categoría...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      filteredCategories = _categories
+                          .where((category) => category
+                              .toLowerCase()
+                              .contains(value.toLowerCase()))
+                          .toList();
+                    });
+                  },
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: filteredCategories.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(filteredCategories[index]),
+                      selected: _selectedCategory == filteredCategories[index],
+                      onTap: () {
+                        setState(() =>
+                            _selectedCategory = filteredCategories[index]);
+                        Navigator.pop(context);
+                        this.setState(() {});
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -163,23 +256,15 @@ class _ReminderFormState extends State<ReminderForm> {
             },
           ),
           const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            value: _selectedCategory,
-            decoration: const InputDecoration(
-              labelText: 'Category',
-              border: OutlineInputBorder(),
+          TextFormField(
+            readOnly: true,
+            decoration: InputDecoration(
+              labelText: 'Categoría',
+              border: const OutlineInputBorder(),
+              suffixIcon: const Icon(Icons.arrow_drop_down),
             ),
-            items: _categories.map((category) {
-              return DropdownMenuItem(
-                value: category,
-                child: Text(category),
-              );
-            }).toList(),
-            onChanged: (value) {
-              if (value != null) {
-                setState(() => _selectedCategory = value);
-              }
-            },
+            controller: TextEditingController(text: _selectedCategory),
+            onTap: _showCategoryBottomSheet,
           ),
           const SizedBox(height: 16),
           ListTile(
@@ -209,11 +294,26 @@ class _ReminderFormState extends State<ReminderForm> {
           ),
           if (_isRecurring) ...[
             DropdownButtonFormField<String>(
+              padding: EdgeInsets.all(20),
               value: _recurrenceType,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Recurrence Type',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: Colors.grey[50],
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
               ),
+              icon: const Icon(Icons.arrow_drop_down_circle),
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
+              dropdownColor: Colors.white,
               items: _recurrenceTypes.map((type) {
                 return DropdownMenuItem(
                   value: type,
