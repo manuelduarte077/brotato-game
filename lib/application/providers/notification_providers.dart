@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 final notificationSettingsProvider =
     StateNotifierProvider<NotificationSettingsNotifier, NotificationSettings>(
@@ -35,6 +36,7 @@ class NotificationSettingsNotifier extends StateNotifier<NotificationSettings> {
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
+
     state = NotificationSettings(
       localNotificationsEnabled:
           prefs.getBool('localNotificationsEnabled') ?? true,
@@ -46,12 +48,14 @@ class NotificationSettingsNotifier extends StateNotifier<NotificationSettings> {
 
   Future<void> toggleLocalNotifications(bool value) async {
     final prefs = await SharedPreferences.getInstance();
+
     await prefs.setBool('localNotificationsEnabled', value);
     state = state.copyWith(localNotificationsEnabled: value);
   }
 
   Future<void> toggleReminderDay(int days) async {
     final prefs = await SharedPreferences.getInstance();
+
     final currentDays = List<int>.from(state.reminderDays);
 
     if (currentDays.contains(days)) {
@@ -102,10 +106,30 @@ final notificationHistoryProvider = StateNotifierProvider<
 
 class NotificationHistoryNotifier
     extends StateNotifier<List<NotificationRecord>> {
-  NotificationHistoryNotifier() : super([]);
+  NotificationHistoryNotifier() : super([]) {
+    _loadNotifications();
+  }
+
+  Future<void> _loadNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final notificationsJson = prefs.getStringList('notifications') ?? [];
+
+    state = notificationsJson
+        .map((json) => _notificationFromJson(jsonDecode(json)))
+        .toList();
+  }
+
+  Future<void> _saveNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final notificationsJson =
+        state.map((n) => jsonEncode(_notificationToJson(n))).toList();
+
+    await prefs.setStringList('notifications', notificationsJson);
+  }
 
   void addNotification(NotificationRecord notification) {
     state = [notification, ...state];
+    _saveNotifications();
   }
 
   void markAsRead(int id) {
@@ -116,9 +140,31 @@ class NotificationHistoryNotifier
         else
           notification,
     ];
+    _saveNotifications();
   }
 
   void clearReadNotifications() {
     state = state.where((notification) => !notification.isRead).toList();
+    _saveNotifications();
+  }
+
+  Map<String, dynamic> _notificationToJson(NotificationRecord notification) {
+    return {
+      'id': notification.id,
+      'title': notification.title,
+      'body': notification.body,
+      'timestamp': notification.timestamp.toIso8601String(),
+      'isRead': notification.isRead,
+    };
+  }
+
+  NotificationRecord _notificationFromJson(Map<String, dynamic> json) {
+    return NotificationRecord(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      body: json['body'] as String,
+      timestamp: DateTime.parse(json['timestamp'] as String),
+      isRead: json['isRead'] as bool,
+    );
   }
 }
