@@ -49,7 +49,9 @@ class ProfileScreen extends ConsumerWidget {
                 authState.user == null
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         child: FilledButton(
                           onPressed: () {
                             ref

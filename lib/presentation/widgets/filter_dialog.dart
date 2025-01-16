@@ -11,7 +11,6 @@ class FilterDialog extends ConsumerWidget {
     final filterState = ref.watch(filterStateProvider);
     final platform = Theme.of(context).platform;
 
-    // Retornar diálogo específico según plataforma
     return platform == TargetPlatform.iOS
         ? _buildCupertinoDialog(context, ref, filterState)
         : _buildMaterialDialog(context, ref, filterState);
@@ -31,7 +30,12 @@ class FilterDialog extends ConsumerWidget {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.date_range),
-                title: const Text('Date Range'),
+                title: const Text(
+                  'Date Range',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 subtitle: Text(
                   filterState.startDate != null && filterState.endDate != null
                       ? '${filterState.startDate!.toString().split(' ')[0]} to ${filterState.endDate!.toString().split(' ')[0]}'
@@ -95,7 +99,12 @@ class FilterDialog extends ConsumerWidget {
             Card(
               child: SwitchListTile(
                 secondary: const Icon(Icons.swap_vert),
-                title: const Text('Ascending Order'),
+                title: const Text(
+                  'Ascending Order',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 subtitle: Text(
                   filterState.sortAscending ? 'Oldest first' : 'Newest first',
                   style:
