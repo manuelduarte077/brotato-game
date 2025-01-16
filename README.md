@@ -62,3 +62,19 @@ Por ejemplo, si configuras:
 recurrenceType: "daily"
 recurrenceInterval: 3
 ``
+
+
+
+- Notifications
+  Las notificaciones no se estan guardando en la lista de leidas, recientes, no leidas, si estan llegando pero estan apareciendo en la lista
+
+- SplashScreen
+
+- Reportes
+  Reporte de pagos altos, bajos, recientes, con mas tiempo
+
+- Categorias
+  Guardar nombre, foto (Logo)
+
+- Marcas
+  - Guardar nombre o empresa donde pago (logo)

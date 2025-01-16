@@ -5,18 +5,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Never Forget",
+      "name": "Never Forgett",
       "request": "launch",
       "type": "dart"
     },
     {
-      "name": "Never Forget (profile mode)",
+      "name": "Never Forgett (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "Never Forget (release mode)",
+      "name": "Never Forgett (release mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

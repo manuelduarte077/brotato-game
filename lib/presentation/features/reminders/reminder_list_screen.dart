@@ -86,7 +86,7 @@ class ReminderListScreen extends ConsumerWidget {
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: filteredReminders.length,
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.zero,
                 itemBuilder: (context, index) {
                   final reminder = filteredReminders[index];
 
