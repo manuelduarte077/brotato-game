@@ -1,11 +1,11 @@
 {
-    "name": "Never Forget",
-    "short_name": "Never Forget",
+    "name": "Never Forgett",
+    "short_name": "Never Forgett",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#1a2e2f",
     "theme_color": "#1f4546",
-    "description": "Never Forget - Payment Reminder App",
+    "description": "Never Forgett - Payment Reminder App",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
