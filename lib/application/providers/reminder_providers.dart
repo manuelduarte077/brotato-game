@@ -1,4 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'firebase_providers.dart';
+import 'package:flutter/foundation.dart';
+
 import '../../domain/repositories/reminder_repository.dart';
 import '../../infrastructure/repositories/drift_reminder_repository.dart';
 import '../../infrastructure/repositories/firebase_reminder_repository.dart';
@@ -6,8 +9,6 @@ import '../../infrastructure/repositories/hybrid_reminder_repository.dart';
 import '../database_provider.dart';
 import '../providers/auth_providers.dart';
 import '../../domain/models/reminder.dart';
-import 'firebase_providers.dart';
-import 'package:flutter/foundation.dart';
 import '../../infrastructure/services/notification_service.dart';
 
 final reminderRepositoryProvider = Provider<ReminderRepository>((ref) {
@@ -20,6 +21,7 @@ final reminderRepositoryProvider = Provider<ReminderRepository>((ref) {
       firestore: ref.watch(firebaseFirestoreProvider),
       userId: authState.user?.uid,
     );
+
     return HybridReminderRepository(driftRepo, firebaseRepo);
   }
 
@@ -28,11 +30,13 @@ final reminderRepositoryProvider = Provider<ReminderRepository>((ref) {
 
 final remindersStreamProvider = StreamProvider<List<Reminder>>((ref) {
   final repository = ref.watch(reminderRepositoryProvider);
+
   return repository.watchReminders();
 });
 
 final reminderControllerProvider = Provider((ref) {
   final repository = ref.watch(reminderRepositoryProvider);
+
   return ReminderController(repository);
 });
 
@@ -80,6 +84,7 @@ class ReminderController {
       if (reminder.id != null) {
         await _notificationService.cancelReminderNotifications(reminder.id!);
       }
+
       await _notificationService.scheduleReminderNotification(reminder);
     } catch (e) {
       debugPrint('Error updating reminder: $e');
