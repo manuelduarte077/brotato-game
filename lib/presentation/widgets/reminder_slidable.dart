@@ -19,7 +19,7 @@ class ReminderSlidable extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Slidable(
         key: Key(reminder.id.toString()),
         endActionPane: ActionPane(

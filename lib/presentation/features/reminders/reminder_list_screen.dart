@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../application/providers/filter_providers.dart';
 import '../../widgets/filter_dialog.dart';
 import 'create_reminder_screen.dart';
-
 import '../../widgets/reminder_slidable.dart';
 
 class ReminderListScreen extends ConsumerWidget {
