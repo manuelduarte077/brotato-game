@@ -9,6 +9,7 @@ import '../../../application/providers/language_provider.dart';
 import 'package:intl/intl.dart';
 
 import '../notifications/notifications_screen.dart';
+import 'report_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -271,19 +272,5 @@ class ProfileScreen extends ConsumerWidget {
         ),
       );
     }
-  }
-}
-
-class ReportScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Report'),
-      ),
-      body: Center(
-        child: Text('Report'),
-      ),
-    );
   }
 }
