@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../domain/models/reminder.dart';
+import '../features/reminders/show_reminder_screen.dart';
 
 class ReminderCard extends ConsumerWidget {
   final Reminder reminder;
@@ -17,27 +18,37 @@ class ReminderCard extends ConsumerWidget {
 
     return Card(
       child: ListTile(
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            scrollControlDisabledMaxHeightRatio: 0.9,
+            showDragHandle: true,
+            builder: (context) => ShowReminderScreen(reminder: reminder),
+          );
+        },
         title: Row(
           children: [
             Expanded(
               child: Text(
                 reminder.title,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            if (reminder.isSynced)
-              const Icon(Icons.cloud_done, size: 16, color: Colors.green)
-            else
-              const Icon(Icons.cloud_off, size: 16, color: Colors.grey),
           ],
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (reminder.description != null) Text(reminder.description!),
+            if (reminder.description != null)
+              Text(
+                reminder.description ?? '',
+                style: const TextStyle(
+                  fontSize: 14,
+                ),
+              ),
             Text(
               'Due: ${DateFormat.yMMMd().format(reminder.dueDate)}',
               style: TextStyle(
@@ -48,6 +59,9 @@ class ReminderCard extends ConsumerWidget {
             ),
             Text(
               'Amount: ${currencyFormat.format(reminder.amount)}',
+              style: const TextStyle(
+                fontSize: 14,
+              ),
             ),
           ],
         ),

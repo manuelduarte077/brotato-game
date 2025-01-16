@@ -15,6 +15,9 @@ class EditReminderScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Material(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       child: ReminderForm(
         initialReminder: reminder,
         onSubmit: (title, amount, dueDate, category, description, isRecurring,

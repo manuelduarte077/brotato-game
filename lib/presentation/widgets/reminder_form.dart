@@ -195,6 +195,87 @@ class _ReminderFormState extends State<ReminderForm> {
     );
   }
 
+  void _showRecurrenceTypeBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.4,
+        minChildSize: 0.3,
+        maxChildSize: 0.5,
+        expand: false,
+        builder: (context, scrollController) => Column(
+          children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: _recurrenceTypes.length,
+                itemBuilder: (context, index) {
+                  final type = _recurrenceTypes[index];
+                  return ListTile(
+                    leading: Icon(
+                      _getRecurrenceIcon(type),
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    title: Text(type),
+                    subtitle: Text(_getRecurrenceDescription(type)),
+                    selected: _recurrenceType == type,
+                    onTap: () {
+                      setState(() => _recurrenceType = type);
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _getRecurrenceIcon(String type) {
+    switch (type) {
+      case 'Daily':
+        return Icons.calendar_view_day;
+      case 'Weekly':
+        return Icons.calendar_view_week;
+      case 'Monthly':
+        return Icons.calendar_view_month;
+      case 'Yearly':
+        return Icons.calendar_today;
+      default:
+        return Icons.repeat;
+    }
+  }
+
+  String _getRecurrenceDescription(String type) {
+    switch (type) {
+      case 'Daily':
+        return 'El recordatorio se repetirá diariamente';
+      case 'Weekly':
+        return 'El recordatorio se repetirá semanalmente';
+      case 'Monthly':
+        return 'El recordatorio se repetirá mensualmente';
+      case 'Yearly':
+        return 'El recordatorio se repetirá anualmente';
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ///
@@ -293,36 +374,17 @@ class _ReminderFormState extends State<ReminderForm> {
             },
           ),
           if (_isRecurring) ...[
-            DropdownButtonFormField<String>(
-              padding: EdgeInsets.all(20),
-              value: _recurrenceType,
+            TextFormField(
+              readOnly: true,
               decoration: InputDecoration(
-                labelText: 'Recurrence Type',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                labelText: 'Tipo de Recurrencia',
+                border: const OutlineInputBorder(),
+                suffixIcon: const Icon(Icons.arrow_drop_down),
                 filled: true,
                 fillColor: Colors.grey[50],
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
               ),
-              icon: const Icon(Icons.arrow_drop_down_circle),
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black87,
-              ),
-              dropdownColor: Colors.white,
-              items: _recurrenceTypes.map((type) {
-                return DropdownMenuItem(
-                  value: type,
-                  child: Text(type),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() => _recurrenceType = value);
-              },
+              controller: TextEditingController(text: _recurrenceType),
+              onTap: _showRecurrenceTypeBottomSheet,
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -348,6 +410,9 @@ class _ReminderFormState extends State<ReminderForm> {
           ],
           const SizedBox(height: 24),
           FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+            ),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 widget.onSubmit(
