@@ -18,37 +18,43 @@ class ReminderSlidable extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Slidable(
-      key: Key(reminder.id.toString()),
-      startActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        children: [
-          SlidableAction(
-            onPressed: (context) => _showEditSheet(context),
-            backgroundColor: Colors.blue,
-            foregroundColor: Colors.white,
-            icon: CupertinoIcons.pencil,
-            autoClose: true,
-            borderRadius: BorderRadius.circular(8),
-            label: 'Editar',
-          ),
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: Slidable(
+        key: Key(reminder.id.toString()),
+        endActionPane: ActionPane(
+          motion: const BehindMotion(),
+          children: [
+            /// Edit action
+            SlidableAction(
+              padding: EdgeInsets.zero,
+              onPressed: (context) => _showEditSheet(context),
+              backgroundColor: Colors.blueAccent,
+              foregroundColor: Colors.white,
+              icon: Icons.edit,
+              label: 'Editar',
+              autoClose: true,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ],
+        ),
+        startActionPane: ActionPane(
+          motion: const BehindMotion(),
+          children: [
+            SlidableAction(
+              padding: EdgeInsets.zero,
+              onPressed: (context) => _handleDelete(context, ref),
+              backgroundColor: Colors.redAccent,
+              foregroundColor: Colors.white,
+              icon: Icons.delete_forever_outlined,
+              autoClose: true,
+              label: 'Eliminar',
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ],
+        ),
+        child: ReminderCard(reminder: reminder),
       ),
-      endActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        children: [
-          SlidableAction(
-            onPressed: (context) => _handleDelete(context, ref),
-            backgroundColor: Colors.red,
-            foregroundColor: Colors.white,
-            icon: CupertinoIcons.delete,
-            autoClose: true,
-            label: 'Eliminar',
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ],
-      ),
-      child: ReminderCard(reminder: reminder),
     );
   }
 

@@ -6,10 +6,10 @@ import '../../../application/providers/auth_providers.dart';
 import '../../../application/providers/sync_provider.dart';
 import '../../../application/providers/theme_provider.dart';
 import '../../../application/providers/language_provider.dart';
-import '../../widgets/category_management_dialog.dart';
 import 'package:intl/intl.dart';
 
 import '../notifications/notifications_screen.dart';
+import 'report_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -49,7 +49,9 @@ class ProfileScreen extends ConsumerWidget {
                 authState.user == null
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         child: FilledButton(
                           onPressed: () {
                             ref
@@ -94,8 +96,6 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ),
 
-              /// Repo
-
               // Language Selection
               ListTile(
                 leading: const Icon(Icons.language_outlined),
@@ -111,15 +111,20 @@ class ProfileScreen extends ConsumerWidget {
                     _showLanguageSelector(context, ref, currentLanguage),
               ),
 
-              // Categories Management
+              /// Report
               ListTile(
-                leading: const Icon(Icons.category_outlined),
+                leading: const Icon(Icons.bar_chart_outlined),
                 title: const Text(
-                  'Manage Categories',
+                  'Report',
                   style: TextStyle(fontSize: 16),
                 ),
                 onTap: () {
-                  _showCategoriesDialog(context, ref);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ReportScreen(),
+                    ),
+                  );
                 },
               ),
 
@@ -156,33 +161,25 @@ class ProfileScreen extends ConsumerWidget {
               ),
 
               /// Cerrar sesión
-              ListTile(
-                leading: const Icon(Icons.logout_outlined),
-                title: const Text(
-                  'Cerrar sesión',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
+              if (authState.user != null)
+                ListTile(
+                  leading: const Icon(Icons.logout_outlined),
+                  title: const Text(
+                    'Cerrar sesión',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
                   ),
+                  onTap: () {
+                    ref.read(authStateProvider.notifier).signOut();
+                  },
                 ),
-                onTap: () {
-                  ref.read(authStateProvider.notifier).signOut();
-                },
-              ),
             ],
           ),
         ),
       ],
-    );
-  }
-
-  void _showCategoriesDialog(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      showDragHandle: true,
-      scrollControlDisabledMaxHeightRatio: 0.9,
-      builder: (context) => const CategoryManagementBottomSheet(),
     );
   }
 

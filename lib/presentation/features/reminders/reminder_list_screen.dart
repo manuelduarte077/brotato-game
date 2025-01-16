@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../application/providers/filter_providers.dart';
 import '../../widgets/filter_dialog.dart';
 import 'create_reminder_screen.dart';
-
 import '../../widgets/reminder_slidable.dart';
 
 class ReminderListScreen extends ConsumerWidget {
@@ -86,7 +85,7 @@ class ReminderListScreen extends ConsumerWidget {
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: filteredReminders.length,
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.zero,
                 itemBuilder: (context, index) {
                   final reminder = filteredReminders[index];
 
