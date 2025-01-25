@@ -1,7 +1,10 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:timezone/timezone.dart' as tz;
+import '../../application/providers/notification_providers.dart';
 import '../../domain/models/reminder.dart';
+import 'package:riverpod/riverpod.dart';
+import 'dart:convert';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._();
@@ -9,6 +12,7 @@ class NotificationService {
   NotificationService._();
 
   final _notifications = FlutterLocalNotificationsPlugin();
+  final _container = ProviderContainer();
 
   Future<void> init() async {
     const androidSettings =
@@ -17,6 +21,9 @@ class NotificationService {
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
+      defaultPresentAlert: true,
+      defaultPresentBadge: true,
+      defaultPresentSound: true,
     );
 
     const settings = InitializationSettings(
@@ -24,7 +31,32 @@ class NotificationService {
       iOS: iosSettings,
     );
 
-    await _notifications.initialize(settings);
+    await _notifications.initialize(
+      settings,
+      onDidReceiveNotificationResponse: _onNotificationTapped,
+    );
+  }
+
+  void _onNotificationTapped(NotificationResponse details) {
+    if (details.payload != null) {
+      try {
+        final payloadData = Map<String, dynamic>.from(
+          json.decode(details.payload!) as Map,
+        );
+        final notification = NotificationRecord(
+          id: payloadData['id'] as int,
+          title: payloadData['title'] as String,
+          body: payloadData['body'] as String,
+          timestamp: DateTime.parse(payloadData['timestamp'] as String),
+        );
+
+        _container
+            .read(notificationHistoryProvider.notifier)
+            .addNotification(notification);
+      } catch (e) {
+        debugPrint('Error processing notification payload: $e');
+      }
+    }
   }
 
   Future<void> scheduleReminderNotification(Reminder reminder) async {
@@ -33,14 +65,12 @@ class NotificationService {
       return;
     }
 
-    // Programar notificación para el día del vencimiento
     await _scheduleNotification(
       reminder,
       reminder.dueDate,
       notificationType: 'due',
     );
 
-    // Programar notificación 1 día antes
     final oneDayBefore = reminder.dueDate.subtract(const Duration(days: 1));
     if (oneDayBefore.isAfter(DateTime.now())) {
       await _scheduleNotification(
@@ -58,8 +88,6 @@ class NotificationService {
   }) async {
     final int notificationId =
         reminder.id ?? DateTime.now().millisecondsSinceEpoch.remainder(100000);
-
-    // Ajustar ID para diferenciar entre tipos de notificación
     final adjustedId =
         notificationType == 'due' ? notificationId : notificationId + 1000;
 
@@ -67,41 +95,65 @@ class NotificationService {
         ? 'Pago vence hoy: \$${reminder.amount}'
         : 'Pago vence mañana: \$${reminder.amount}';
 
-    final androidDetails = AndroidNotificationDetails(
-      'reminders_channel',
-      'Recordatorios de Pago',
-      channelDescription: 'Notificaciones de recordatorios de pago',
-      importance: Importance.high,
-      priority: Priority.high,
-    );
+    final payload = json.encode({
+      'id': adjustedId,
+      'title': reminder.title,
+      'body': message,
+      'timestamp': scheduledDate.toIso8601String(),
+      'reminderId': reminder.id,
+    });
 
     final notificationDetails = NotificationDetails(
-      android: androidDetails,
+      android: AndroidNotificationDetails(
+        'reminders_channel',
+        'Recordatorios de Pago',
+        channelDescription: 'Notificaciones de recordatorios de pago',
+        importance: Importance.high,
+        priority: Priority.high,
+      ),
       iOS: const DarwinNotificationDetails(
         presentAlert: true,
         presentBadge: true,
         presentSound: true,
+        sound: 'default',
+        interruptionLevel: InterruptionLevel.active,
       ),
     );
 
-    await _notifications.zonedSchedule(
-      adjustedId,
-      reminder.title,
-      message,
-      tz.TZDateTime.from(scheduledDate, tz.local),
-      notificationDetails,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
+    try {
+      await _notifications.zonedSchedule(
+        adjustedId,
+        reminder.title,
+        message,
+        tz.TZDateTime.from(scheduledDate, tz.local),
+        notificationDetails,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: payload,
+      );
 
-    debugPrint('Notificación programada para ${scheduledDate.toString()}');
+      // Guardar en el historial
+      final notification = NotificationRecord(
+        id: adjustedId,
+        title: reminder.title,
+        body: message,
+        timestamp: scheduledDate,
+      );
+
+      _container
+          .read(notificationHistoryProvider.notifier)
+          .addNotification(notification);
+
+      debugPrint('Notificación programada para ${scheduledDate.toString()}');
+    } catch (e) {
+      debugPrint('Error scheduling notification: $e');
+      rethrow;
+    }
   }
 
   Future<void> cancelReminderNotifications(int reminderId) async {
-    // Cancelar notificación del día de vencimiento
     await _notifications.cancel(reminderId);
-    // Cancelar notificación del día anterior
     await _notifications.cancel(reminderId + 1000);
   }
 
