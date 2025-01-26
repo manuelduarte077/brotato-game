@@ -8,9 +8,6 @@ import 'firebase_options.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'infrastructure/services/notification_service.dart';
 import 'infrastructure/services/home_widget_service.dart';
-import 'package:home_widget/home_widget.dart';
-
-import 'presentation/features/reminders/reminder_list_screen.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 

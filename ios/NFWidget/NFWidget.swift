@@ -68,7 +68,6 @@ struct SimpleEntry: TimelineEntry {
 struct NFWidgetEntryView : View {
     var entry: Provider.Entry
     
-
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Próximos Pagos")
