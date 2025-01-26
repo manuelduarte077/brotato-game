@@ -182,4 +182,10 @@ class FirebaseReminderRepository implements ReminderRepository {
           .set(_reminderToMap(reminder), SetOptions(merge: true));
     }
   }
+
+  @override
+  Future<List<Reminder>> getReminders() async {
+    final reminders = await getAllReminders();
+    return reminders;
+  }
 }
