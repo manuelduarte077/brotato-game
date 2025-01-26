@@ -7,6 +7,12 @@ import 'app/app.dart';
 import 'firebase_options.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'infrastructure/services/notification_service.dart';
+import 'infrastructure/services/home_widget_service.dart';
+import 'package:home_widget/home_widget.dart';
+
+import 'presentation/features/reminders/reminder_list_screen.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +25,10 @@ void main() async {
 
   // Initialize notifications
   await NotificationService().init();
+
+  // Initialize home widget
+  final homeWidgetService = HomeWidgetService();
+  await homeWidgetService.initialize();
 
   // Firebase Crashlytics
   FlutterError.onError = (errorDetails) {

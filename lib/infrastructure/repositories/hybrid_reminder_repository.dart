@@ -126,4 +126,11 @@ class HybridReminderRepository implements ReminderRepository {
     await _localRepository.createOrUpdateReminder(reminder);
     await _remoteRepository.createOrUpdateReminder(reminder);
   }
+
+  @override
+  Future<List<Reminder>> getReminders() async {
+    final localReminders = await _localRepository.getReminders();
+    final remoteReminders = await _remoteRepository.getReminders();
+    return [...localReminders, ...remoteReminders];
+  }
 }

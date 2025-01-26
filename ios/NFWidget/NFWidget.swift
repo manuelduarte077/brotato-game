@@ -27,9 +27,13 @@ struct Provider: TimelineProvider {
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
         let userDefaults = UserDefaults(suiteName: appGroupId)
         
+        print("Reading widget data from UserDefaults")
+        
         let titles = userDefaults?.stringArray(forKey: "titles") ?? []
         let amounts = userDefaults?.array(forKey: "amounts") as? [Double] ?? []
         let dueDates = userDefaults?.stringArray(forKey: "dueDates") ?? []
+        
+        print("Widget data read: titles=\(titles), amounts=\(amounts), dueDates=\(dueDates)")
         
         var payments: [Payment] = []
         for i in 0..<min(titles.count, min(amounts.count, dueDates.count)) {
@@ -39,6 +43,8 @@ struct Provider: TimelineProvider {
                 dueDate: dueDates[i]
             ))
         }
+        
+        print("Created payments: \(payments)")
         
         let entry = SimpleEntry(date: Date(), payments: payments)
         completion(entry)
@@ -61,6 +67,7 @@ struct SimpleEntry: TimelineEntry {
 
 struct NFWidgetEntryView : View {
     var entry: Provider.Entry
+    
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {

@@ -8,5 +8,6 @@ abstract class ReminderRepository {
   Future<void> deleteReminder(int id);
   Future<void> deleteAllReminders();
   Future<void> createOrUpdateReminder(Reminder reminder);
+  Future<List<Reminder>> getReminders();
   Stream<List<Reminder>> watchReminders();
 }

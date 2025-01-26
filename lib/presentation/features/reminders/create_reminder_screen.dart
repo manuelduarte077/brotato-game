@@ -9,7 +9,6 @@ class CreateReminderScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isBottomSheet = ModalRoute.of(context)?.settings.name == null;
-    print('isBottomSheet: $isBottomSheet');
 
     return Scaffold(
       appBar: isBottomSheet
