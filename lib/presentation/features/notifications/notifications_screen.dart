@@ -15,12 +15,18 @@ class NotificationsScreen extends ConsumerWidget {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Notifications'),
+          title: const Text(
+            'Notifications',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
           bottom: const TabBar(
+            labelStyle: TextStyle(fontSize: 12),
+            automaticIndicatorColorAdjustment: true,
+            splashFactory: NoSplash.splashFactory,
             tabs: [
-              Tab(text: 'Unread'),
-              Tab(text: 'Recent'),
-              Tab(text: 'Read'),
+              Tab(text: 'Unread', icon: Icon(Icons.notifications_none)),
+              Tab(text: 'Recent', icon: Icon(Icons.notifications_active)),
+              Tab(text: 'Read', icon: Icon(Icons.notifications_none)),
             ],
           ),
           actions: [
@@ -82,8 +88,14 @@ class _NotificationSettings extends ConsumerWidget {
           const SizedBox(height: 16),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text('Enable Notifications'),
-            subtitle: const Text('Receive payment reminders'),
+            title: const Text(
+              'Enable Notifications',
+              style: TextStyle(fontSize: 16),
+            ),
+            subtitle: const Text(
+              'Receive payment reminders',
+              style: TextStyle(fontSize: 12),
+            ),
             value: settings.localNotificationsEnabled,
             onChanged: (value) async {
               if (value) {
@@ -94,7 +106,10 @@ class _NotificationSettings extends ConsumerWidget {
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Please enable notifications in settings'),
+                      content: Text(
+                        'Please enable notifications in settings',
+                        style: TextStyle(fontSize: 12),
+                      ),
                     ),
                   );
                   return;
