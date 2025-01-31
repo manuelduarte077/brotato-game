@@ -9,8 +9,6 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'infrastructure/services/notification_service.dart';
 import 'infrastructure/services/home_widget_service.dart';
 
-final navigatorKey = GlobalKey<NavigatorState>();
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
