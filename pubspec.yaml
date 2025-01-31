@@ -9,15 +9,15 @@ environment:
   sdk: ^3.6.0
 
 dependencies:
-  cloud_firestore: ^5.6.1
+  cloud_firestore: ^5.6.2
   cupertino_icons: ^1.0.8
   drift: ^2.23.1
   drift_flutter: ^0.2.4
   firebase_analytics: ^11.4.0
-  firebase_auth: ^5.4.0
-  firebase_core: ^3.10.0
-  firebase_crashlytics: ^4.3.0
-  firebase_storage: ^12.4.0
+  firebase_auth: ^5.4.1
+  firebase_core: ^3.10.1
+  firebase_crashlytics: ^4.3.1
+  firebase_storage: ^12.4.1
   fl_chart: ^0.70.1
   flutter:
     sdk: flutter
@@ -27,7 +27,8 @@ dependencies:
   google_fonts: ^6.2.1
   google_sign_in: ^6.2.2
   home_widget: ^0.7.0
-  intl: ^0.20.1
+  intl: ^0.19.0
+  local_auth: ^2.3.0
   quick_actions: ^1.1.0
   shared_preferences: ^2.3.5
   table_calendar: ^3.0.9

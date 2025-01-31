@@ -3,6 +3,7 @@ import '../features/home_screen.dart';
 import '../features/calendar/calendar_screen.dart';
 import '../features/reminders/create_reminder_screen.dart';
 import '../features/profile/profile_screen.dart';
+import '../features/auth/auth_gate.dart';
 
 class AppRoutes {
   static const String home = '/';
@@ -11,7 +12,7 @@ class AppRoutes {
   static const String profile = '/profile';
 
   static Map<String, Widget Function(BuildContext)> get routes => {
-        home: (context) => const HomeScreen(),
+        home: (context) => AuthGate(child: const HomeScreen()),
         createReminder: (context) => const CreateReminderScreen(),
         calendar: (context) => const CalendarScreen(),
         profile: (context) => const ProfileScreen(),
@@ -22,18 +23,15 @@ class AppRoutes {
       return MaterialPageRoute(
         settings: settings,
         builder: (context) {
-          switch (settings.name) {
-            case createReminder:
-              return const CreateReminderScreen();
-            case calendar:
-              return const CalendarScreen();
-            case profile:
-              return const ProfileScreen();
-            case home:
-              return const HomeScreen();
-            default:
-              throw const RouteException('Route not found');
-          }
+          final widget = switch (settings.name) {
+            createReminder => const CreateReminderScreen(),
+            calendar => const CalendarScreen(),
+            profile => const ProfileScreen(),
+            home => const HomeScreen(),
+            _ => throw const RouteException('Route not found'),
+          };
+
+          return settings.name == home ? AuthGate(child: widget) : widget;
         },
       );
     } catch (e) {
