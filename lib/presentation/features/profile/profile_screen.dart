@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +12,7 @@ import 'package:intl/intl.dart';
 
 import '../notifications/notifications_screen.dart';
 import 'report_screen.dart';
+import '../../../application/providers/local_auth_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -110,6 +113,11 @@ class ProfileScreen extends ConsumerWidget {
                 onTap: () =>
                     _showLanguageSelector(context, ref, currentLanguage),
               ),
+
+              /// Habilitar Face ID (iOS), Touch ID (Android)
+              if (Theme.of(context).platform == TargetPlatform.iOS ||
+                  Theme.of(context).platform == TargetPlatform.android)
+                const BiometricSettingTile(),
 
               /// Report
               ListTile(
@@ -273,6 +281,69 @@ class ProfileScreen extends ConsumerWidget {
           ],
         ),
       );
+    }
+  }
+}
+
+class BiometricSettingTile extends ConsumerWidget {
+  const BiometricSettingTile({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isIOS = Platform.isIOS;
+    final biometricEnabled = ref.watch(biometricEnabledProvider);
+
+    return ListTile(
+      leading: Icon(
+        isIOS ? Icons.face_outlined : Icons.fingerprint,
+        color: Theme.of(context).primaryColor,
+      ),
+      title: Text(isIOS ? 'Face ID' : 'Fingerprint'),
+      subtitle: Text(isIOS
+          ? 'Enable Face ID authentication'
+          : 'Enable fingerprint authentication'),
+      trailing: Switch(
+        value: biometricEnabled.valueOrNull ?? false,
+        onChanged: (value) => _handleBiometricToggle(context, ref, value),
+      ),
+    );
+  }
+
+  Future<void> _handleBiometricToggle(
+    BuildContext context,
+    WidgetRef ref,
+    bool value,
+  ) async {
+    try {
+      if (value) {
+        final canCheckBiometrics =
+            await ref.read(localAuthServiceProvider).isBiometricAvailable();
+
+        if (!canCheckBiometrics) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  Platform.isIOS
+                      ? 'Face ID is not available on this device'
+                      : 'Fingerprint authentication is not available on this device',
+                ),
+              ),
+            );
+          }
+          return;
+        }
+      }
+
+      await ref.read(biometricEnabledProvider.notifier).toggleBiometric(value);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
+      }
     }
   }
 }

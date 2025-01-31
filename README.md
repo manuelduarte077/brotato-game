@@ -40,3 +40,7 @@
 - Personalización:
   Elegir entre diferentes temas
   Elegir diferentes idiomas
+
+- Agregar agregar auth con faceid y figerprint
+
+

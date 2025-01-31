@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,20 +6,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../application/providers/reminder_providers.dart';
 import '../../../domain/models/reminder.dart';
 
-class ReportScreen extends ConsumerWidget {
+class ReportScreen extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _ReportScreenState createState() => _ReportScreenState();
+}
+
+class _ReportScreenState extends ConsumerState<ReportScreen> {
+  TimeFilter selectedFilter = TimeFilter.lastMonth;
+
+  @override
+  Widget build(BuildContext context) {
     final reminders = ref.watch(remindersStreamProvider);
+    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
         title: Text(
           'Reports',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 22,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -29,51 +37,104 @@ class ReportScreen extends ConsumerWidget {
             return Center(
               child: Text(
                 'No payment data available',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w600),
               ),
             );
           }
+
+          final filteredReminders = _filterReminders(reminderList);
 
           return SingleChildScrollView(
             padding: EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildPaymentTrendsCard(context, reminderList),
+                _buildTimeFilter(),
                 SizedBox(height: 16),
-                _buildHighestPaymentsCard(context, reminderList),
+                _buildPaymentTrendsCard(context, filteredReminders),
                 SizedBox(height: 16),
-                _buildCategoryDistributionCard(context, reminderList),
+                _buildHighestPaymentsCard(context, filteredReminders),
+                SizedBox(height: 16),
+                _buildCategoryDistributionCard(context, filteredReminders),
               ],
             ),
           );
         },
         loading: () => Center(child: CircularProgressIndicator.adaptive()),
-        error: (error, stack) => Center(
-            child: Text(
-          'Error: $error',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.redAccent,
-          ),
-        )),
+        error: (error, stack) => Center(child: Text('Error: $error')),
       ),
     );
+  }
+
+  Widget _buildTimeFilter() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _filterChip(TimeFilter.lastMonth, 'Last Month'),
+          SizedBox(width: 8),
+          _filterChip(TimeFilter.last3Months, 'Last 3 Months'),
+          SizedBox(width: 8),
+          _filterChip(TimeFilter.last6Months, 'Last 6 Months'),
+        ],
+      ),
+    );
+  }
+
+  Widget _filterChip(TimeFilter filter, String label) {
+    return FilterChip(
+      selected: selectedFilter == filter,
+      label: Text(
+        label,
+        style: Theme.of(context)
+            .textTheme
+            .labelSmall
+            ?.copyWith(fontWeight: FontWeight.w600),
+      ),
+      onSelected: (selected) {
+        setState(() {
+          selectedFilter = filter;
+        });
+      },
+      selectedColor: Theme.of(context).primaryColor.withValues(alpha: 0.2),
+      checkmarkColor: Theme.of(context).primaryColor,
+    );
+  }
+
+  List<Reminder> _filterReminders(List<Reminder> reminders) {
+    final now = DateTime.now();
+    final filterDate = switch (selectedFilter) {
+      TimeFilter.lastMonth => now.subtract(Duration(days: 30)),
+      TimeFilter.last3Months => now.subtract(Duration(days: 90)),
+      TimeFilter.last6Months => now.subtract(Duration(days: 180)),
+    };
+
+    return reminders
+        .where((reminder) => reminder.dueDate.isAfter(filterDate))
+        .toList();
   }
 
   Widget _buildPaymentTrendsCard(
       BuildContext context, List<Reminder> reminders) {
     final monthlyTotals = _calculateMonthlyTotals(reminders);
 
+    final maxAmount = monthlyTotals.values.isEmpty
+        ? 100.0
+        : monthlyTotals.values.reduce(max) * 1.2;
+    final minAmount = monthlyTotals.values.isEmpty
+        ? 0.0
+        : monthlyTotals.values.reduce(min) * 0.8;
+
     return Card(
-      elevation: 0.5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 2,
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: Colors.grey.withValues(alpha: 0.1)),
+      ),
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -82,11 +143,22 @@ class ReportScreen extends ConsumerWidget {
               children: [
                 Text(
                   'Payment Trends',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.onSurface),
                 ),
-                Icon(Icons.trending_up, color: Theme.of(context).primaryColor),
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color:
+                        Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.trending_up,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 16),
@@ -94,43 +166,64 @@ class ReportScreen extends ConsumerWidget {
               height: 200,
               child: LineChart(
                 LineChartData(
+                  minY: minAmount,
+                  maxY: maxAmount,
                   gridData: FlGridData(show: false),
                   titlesData: FlTitlesData(
                     leftTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
+                      sideTitles: SideTitles(
+                        showTitles: false,
+                        reservedSize: 60,
+                        getTitlesWidget: (value, meta) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Text(
+                              '\$${value.toStringAsFixed(0)}',
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.red,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          if (value.toInt() >= monthlyTotals.length) {
-                            return Text('');
-                          }
-                          final date =
-                              monthlyTotals.keys.elementAt(value.toInt());
-                          return Text(
-                            '${date.month}/${date.year}',
-                            style: TextStyle(fontSize: 10),
-                          );
-                        },
+                        reservedSize: 30,
                       ),
+                    ),
+                    rightTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
                     ),
                   ),
                   borderData: FlBorderData(show: false),
                   lineBarsData: [
                     LineChartBarData(
-                      spots: monthlyTotals.entries
-                          .map((e) => FlSpot(
-                              monthlyTotals.keys
-                                  .toList()
-                                  .indexOf(e.key)
-                                  .toDouble(),
-                              e.value))
-                          .toList(),
+                      spots: monthlyTotals.entries.map((e) {
+                        return FlSpot(
+                          monthlyTotals.keys.toList().indexOf(e.key).toDouble(),
+                          e.value,
+                        );
+                      }).toList(),
                       isCurved: true,
                       color: Theme.of(context).primaryColor,
                       barWidth: 3,
-                      dotData: FlDotData(show: false),
+                      dotData: FlDotData(
+                        show: true,
+                        getDotPainter: (spot, percent, barData, index) {
+                          return FlDotCirclePainter(
+                            radius: 4,
+                            color: Theme.of(context).primaryColor,
+                            strokeWidth: 2,
+                            strokeColor: Colors.white,
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -146,11 +239,22 @@ class ReportScreen extends ConsumerWidget {
       BuildContext context, List<Reminder> reminders) {
     final highestPayments = _getHighestPayments(reminders);
 
+    final maxAmount = highestPayments.isEmpty
+        ? 100.0
+        : highestPayments.map((r) => r.amount).reduce(max) * 1.2;
+    final minAmount = highestPayments.isEmpty
+        ? 0.0
+        : highestPayments.map((r) => r.amount).reduce(min) * 0.8;
+
     return Card(
-      elevation: 0.5,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 2,
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: Colors.grey.withValues(alpha: 0.1)),
+      ),
       child: Padding(
-        padding: EdgeInsets.all(20),
+        padding: EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -159,11 +263,22 @@ class ReportScreen extends ConsumerWidget {
               children: [
                 Text(
                   'Highest Payments',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.onSurface),
                 ),
-                Icon(Icons.bar_chart, color: Theme.of(context).primaryColor),
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color:
+                        Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.bar_chart,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 16),
@@ -171,42 +286,47 @@ class ReportScreen extends ConsumerWidget {
               height: 200,
               child: BarChart(
                 BarChartData(
-                  alignment: BarChartAlignment.spaceAround,
-                  maxY: highestPayments.isEmpty
-                      ? 100
-                      : highestPayments.first.amount * 1.2,
-                  barGroups: highestPayments
-                      .asMap()
-                      .entries
-                      .map((e) => BarChartGroupData(
-                            x: e.key,
-                            barRods: [
-                              BarChartRodData(
-                                toY: e.value.amount,
-                                color: Theme.of(context).primaryColor,
-                                width: 20,
-                              ),
-                            ],
-                          ))
-                      .toList(),
+                  minY: minAmount,
+                  maxY: maxAmount,
+                  barGroups: highestPayments.asMap().entries.map((e) {
+                    return BarChartGroupData(
+                      x: e.key,
+                      barRods: [
+                        BarChartRodData(
+                          toY: e.value.amount,
+                          color: Theme.of(context).primaryColor,
+                          width: 20,
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(4),
+                            bottom: Radius.circular(0),
+                          ),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                  gridData: FlGridData(show: false),
+                  borderData: FlBorderData(show: false),
                   titlesData: FlTitlesData(
                     leftTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
+                        reservedSize: 60,
                         getTitlesWidget: (value, meta) {
-                          if (value.toInt() >= highestPayments.length) {
-                            return Text('');
-                          }
-                          return Text(
-                            highestPayments[value.toInt()].title,
-                            style: TextStyle(fontSize: 10),
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Text(
+                              '\$${value.toStringAsFixed(0)}',
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.grey),
+                            ),
                           );
                         },
                       ),
                     ),
+                    rightTitles:
+                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles:
+                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
                   ),
                 ),
               ),
@@ -222,6 +342,10 @@ class ReportScreen extends ConsumerWidget {
     final categoryTotals = _calculateCategoryTotals(reminders);
     final total = categoryTotals.values.fold(0.0, (a, b) => a + b);
 
+    final maxAmount = categoryTotals.values.isEmpty
+        ? 100.0
+        : categoryTotals.values.reduce(max) * 1.2;
+
     return Card(
       elevation: 0.5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -235,9 +359,10 @@ class ReportScreen extends ConsumerWidget {
               children: [
                 Text(
                   'Category Distribution',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 Icon(Icons.pie_chart, color: Theme.of(context).primaryColor),
               ],
@@ -248,16 +373,24 @@ class ReportScreen extends ConsumerWidget {
               child: PieChart(
                 PieChartData(
                   sections: categoryTotals.entries.map((e) {
+                    final percentage = (e.value / total * 100);
+
                     return PieChartSectionData(
                       value: e.value,
-                      title: '${(e.value / total * 100).toStringAsFixed(1)}%',
-                      radius: 100,
+                      title: '${percentage.toStringAsFixed(1)}%',
+                      radius: 80,
                       titleStyle: TextStyle(
                         fontSize: 12,
+                        fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
+                      color: Theme.of(context)
+                          .primaryColor
+                          .withValues(alpha: 0.5 + (e.value / maxAmount * 0.5)),
                     );
                   }).toList(),
+                  sectionsSpace: 2,
+                  centerSpaceRadius: 30,
                 ),
               ),
             ),
@@ -272,7 +405,8 @@ class ReportScreen extends ConsumerWidget {
                         width: 12,
                         height: 12,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).primaryColor.withValues(
+                              alpha: 0.5 + (e.value / maxAmount * 0.5)),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -281,7 +415,7 @@ class ReportScreen extends ConsumerWidget {
                         child: Text(
                           e.key,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -289,7 +423,7 @@ class ReportScreen extends ConsumerWidget {
                       Text(
                         '\$${e.value.toStringAsFixed(2)}',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: Theme.of(context).primaryColor,
                         ),
@@ -307,10 +441,23 @@ class ReportScreen extends ConsumerWidget {
 
   Map<DateTime, double> _calculateMonthlyTotals(List<Reminder> reminders) {
     final monthlyTotals = <DateTime, double>{};
+    final now = DateTime.now();
+
+    var date = switch (selectedFilter) {
+      TimeFilter.lastMonth => now.subtract(Duration(days: 30)),
+      TimeFilter.last3Months => now.subtract(Duration(days: 90)),
+      TimeFilter.last6Months => now.subtract(Duration(days: 180)),
+    };
+
+    while (date.isBefore(now)) {
+      monthlyTotals[DateTime(date.year, date.month)] = 0;
+      date = DateTime(date.year, date.month + 1);
+    }
 
     for (var reminder in reminders) {
-      final date = DateTime(reminder.dueDate.year, reminder.dueDate.month);
-      monthlyTotals[date] = (monthlyTotals[date] ?? 0) + reminder.amount;
+      final monthKey = DateTime(reminder.dueDate.year, reminder.dueDate.month);
+      monthlyTotals[monthKey] =
+          (monthlyTotals[monthKey] ?? 0) + reminder.amount;
     }
 
     return Map.fromEntries(
@@ -318,9 +465,10 @@ class ReportScreen extends ConsumerWidget {
   }
 
   List<Reminder> _getHighestPayments(List<Reminder> reminders) {
-    return List.from(reminders)
-      ..sort((a, b) => b.amount.compareTo(a.amount))
-      ..take(5);
+    final filteredList = List<Reminder>.from(reminders)
+      ..sort((a, b) => b.amount.compareTo(a.amount));
+
+    return filteredList.take(5).toList();
   }
 
   Map<String, double> _calculateCategoryTotals(List<Reminder> reminders) {
@@ -331,6 +479,15 @@ class ReportScreen extends ConsumerWidget {
           (categoryTotals[reminder.category] ?? 0) + reminder.amount;
     }
 
-    return categoryTotals;
+    final sortedEntries = categoryTotals.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    return Map.fromEntries(sortedEntries.take(5));
   }
+}
+
+enum TimeFilter {
+  lastMonth,
+  last3Months,
+  last6Months,
 }
