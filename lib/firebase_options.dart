@@ -64,6 +64,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '294378450968',
     projectId: 'neverforgettapp',
     storageBucket: 'neverforgettapp.firebasestorage.app',
+    androidClientId: '294378450968-coia6ou9kiv2o9psth7rcses7bgvhpm7.apps.googleusercontent.com',
+    iosClientId: '294378450968-e3a2uts4qc3l8tl4ln4n7pm7812d76pr.apps.googleusercontent.com',
     iosBundleId: 'dev.donmanuel.app.monthlyPayments',
   );
 
@@ -85,5 +87,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'neverforgettapp.firebasestorage.app',
     measurementId: 'G-GSWZNG81XQ',
   );
-
 }
