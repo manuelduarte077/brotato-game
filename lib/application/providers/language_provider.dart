@@ -1,4 +1,6 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final languageProvider = StateNotifierProvider<LanguageNotifier, String>((ref) {
@@ -17,11 +19,13 @@ class LanguageNotifier extends StateNotifier<String> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final savedLanguage = prefs.getString(_storageKey);
+
       if (savedLanguage != null) {
+        await LocaleSettings.setLocale(AppLocale.values.byName(savedLanguage));
         state = savedLanguage;
       }
     } catch (e) {
-      print('Error loading language: $e');
+      FirebaseCrashlytics.instance.log('Error loading language: $e');
     }
   }
 
@@ -29,10 +33,13 @@ class LanguageNotifier extends StateNotifier<String> {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_storageKey, language);
+
+      await LocaleSettings.setLocale(AppLocale.values.byName(language));
+
       state = language;
     } catch (e) {
-      print('Error updating language: $e');
       state = _defaultLanguage;
+      FirebaseCrashlytics.instance.log('Error updating language: $e');
     }
   }
 }

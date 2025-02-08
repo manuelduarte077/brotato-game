@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 
 import '../application/providers/auth_providers.dart';
 import '../application/providers/theme_provider.dart';
@@ -21,8 +22,10 @@ class MyApp extends ConsumerWidget {
       ),
     ));
 
+    final nameApp = context.texts.app.title;
+
     return MaterialApp(
-      title: 'Reminder App',
+      title: nameApp,
       initialRoute: AppRoutes.home,
       routes: AppRoutes.routes,
       onGenerateRoute: AppRoutes.onGenerateRoute,

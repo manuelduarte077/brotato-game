@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 
 import '../../../application/providers/auth_providers.dart';
 import '../../../application/providers/sync_provider.dart';
-import '../../../application/providers/theme_provider.dart';
 import '../../../application/providers/language_provider.dart';
 import 'package:intl/intl.dart';
 
@@ -21,15 +21,16 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
 
-    final isDarkModeAsync = ref.watch(themeProvider);
+    // final isDarkModeAsync = ref.watch(themeProvider); // disabled for now
     final currentLanguage = ref.watch(languageProvider);
+    final profile = context.texts.app.profile;
 
     return CustomScrollView(
       slivers: [
         SliverAppBar(
           pinned: true,
           title: Text(
-            "Profile",
+            profile.perfil,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -61,12 +62,12 @@ class ProfileScreen extends ConsumerWidget {
                                 .read(authStateProvider.notifier)
                                 .signInWithGoogle();
                           },
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.login),
                               SizedBox(width: 8),
-                              Text('Sign in with Google'),
+                              Text(profile.signInWithGoogle),
                             ],
                           ),
                         ),
@@ -87,27 +88,27 @@ class ProfileScreen extends ConsumerWidget {
                       ),
               const SizedBox(height: 32),
 
-              // Theme Toggle
-              ListTile(
-                leading: const Icon(Icons.brightness_6_outlined),
-                title: const Text('Dark Mode'),
-                trailing: Switch(
-                  value: isDarkModeAsync.valueOrNull ?? false,
-                  onChanged: (value) {
-                    ref.read(themeProvider.notifier).toggleTheme();
-                  },
-                ),
-              ),
+              /// Theme Toggle (disabled for now)
+              // ListTile(
+              //   leading: const Icon(Icons.brightness_6_outlined),
+              //   title: Text(profile.darkMode),
+              //   trailing: Switch(
+              //     value: isDarkModeAsync.valueOrNull ?? false,
+              //     onChanged: (value) {
+              //       ref.read(themeProvider.notifier).toggleTheme();
+              //     },
+              //   ),
+              // ),
 
               // Language Selection
               ListTile(
                 leading: const Icon(Icons.language_outlined),
-                title: const Text(
-                  'Language',
+                title: Text(
+                  profile.language,
                   style: TextStyle(fontSize: 16),
                 ),
                 trailing: Text(
-                  currentLanguage == 'en' ? 'English' : 'Español',
+                  currentLanguage == 'en' ? profile.english : profile.spanish,
                   style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                 ),
                 onTap: () =>
@@ -122,8 +123,8 @@ class ProfileScreen extends ConsumerWidget {
               /// Report
               ListTile(
                 leading: const Icon(Icons.bar_chart_outlined),
-                title: const Text(
-                  'Report',
+                title: Text(
+                  profile.report,
                   style: TextStyle(fontSize: 16),
                 ),
                 onTap: () {
@@ -140,11 +141,11 @@ class ProfileScreen extends ConsumerWidget {
               if (authState.user != null)
                 ListTile(
                   leading: const Icon(Icons.sync_outlined),
-                  title: const Text(
-                    'Sincronizar',
+                  title: Text(
+                    profile.sync,
                     style: TextStyle(fontSize: 16),
                   ),
-                  subtitle: Text(_getSyncStatusText(ref)),
+                  subtitle: Text(_getSyncStatusText(ref, context)),
                   trailing: _buildSyncIndicator(ref),
                   onTap: () {
                     ref.read(syncNotifierProvider.notifier).syncFromRemote();
@@ -154,8 +155,8 @@ class ProfileScreen extends ConsumerWidget {
               // Notifications Settings
               ListTile(
                 leading: const Icon(Icons.notifications_outlined),
-                title: const Text(
-                  'Notifications',
+                title: Text(
+                  profile.notifications,
                   style: TextStyle(fontSize: 16),
                 ),
                 onTap: () {
@@ -172,8 +173,8 @@ class ProfileScreen extends ConsumerWidget {
               if (authState.user != null)
                 ListTile(
                   leading: const Icon(Icons.logout_outlined),
-                  title: const Text(
-                    'Cerrar sesión',
+                  title: Text(
+                    profile.logout,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -191,13 +192,15 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  String _getSyncStatusText(WidgetRef ref) {
+  String _getSyncStatusText(WidgetRef ref, context) {
     final syncState = ref.watch(syncNotifierProvider);
+    final profile = context.texts.profile;
+
     if (syncState.lastSyncTime != null) {
       final formatter = DateFormat('dd/MM/yyyy HH:mm');
-      return 'Última sincronización: ${formatter.format(syncState.lastSyncTime!)}';
+      return '${profile.lastSync}: ${formatter.format(syncState.lastSyncTime!)}';
     }
-    return syncState.message ?? 'No sincronizado';
+    return syncState.message ?? profile.noSync;
   }
 
   Widget _buildSyncIndicator(WidgetRef ref) {
@@ -220,11 +223,13 @@ class ProfileScreen extends ConsumerWidget {
 
   void _showLanguageSelector(
       BuildContext context, WidgetRef ref, String currentLanguage) {
+    final profile = context.texts.app.profile;
+
     if (Theme.of(context).platform == TargetPlatform.iOS) {
       showCupertinoModalPopup(
         context: context,
         builder: (BuildContext context) => CupertinoActionSheet(
-          title: const Text('Select Language'),
+          title: Text(profile.language),
           actions: [
             CupertinoActionSheetAction(
               onPressed: () {
@@ -232,7 +237,7 @@ class ProfileScreen extends ConsumerWidget {
                 Navigator.pop(context);
               },
               isDefaultAction: currentLanguage == 'en',
-              child: const Text('English'),
+              child: Text(profile.english),
             ),
             CupertinoActionSheetAction(
               onPressed: () {
@@ -240,12 +245,12 @@ class ProfileScreen extends ConsumerWidget {
                 Navigator.pop(context);
               },
               isDefaultAction: currentLanguage == 'es',
-              child: const Text('Español'),
+              child: Text(profile.spanish),
             ),
           ],
           cancelButton: CupertinoActionSheetAction(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(profile.cancel),
           ),
         ),
       );
@@ -253,11 +258,11 @@ class ProfileScreen extends ConsumerWidget {
       showModalBottomSheet(
         context: context,
         showDragHandle: true,
-        builder: (BuildContext context) => Column(
+        builder: (context) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('English'),
+              title: Text(profile.english),
               leading: const Text('🇺🇸'),
               trailing: currentLanguage == 'en'
                   ? const Icon(Icons.check, color: Colors.blue)
@@ -268,7 +273,7 @@ class ProfileScreen extends ConsumerWidget {
               },
             ),
             ListTile(
-              title: const Text('Español'),
+              title: Text(profile.spanish),
               leading: const Text('🇪🇸'),
               trailing: currentLanguage == 'es'
                   ? const Icon(Icons.check, color: Colors.blue)
@@ -292,16 +297,19 @@ class BiometricSettingTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isIOS = Platform.isIOS;
     final biometricEnabled = ref.watch(biometricEnabledProvider);
+    final profile = context.texts.app.profile;
 
     return ListTile(
       leading: Icon(
         isIOS ? Icons.face_outlined : Icons.fingerprint,
         color: Theme.of(context).primaryColor,
       ),
-      title: Text(isIOS ? 'Face ID' : 'Fingerprint'),
-      subtitle: Text(isIOS
-          ? 'Enable Face ID authentication'
-          : 'Enable fingerprint authentication'),
+      title: Text(isIOS ? profile.faceId : profile.fingerprint),
+      subtitle: Text(
+        isIOS
+            ? profile.enableFaceIdAuthentication
+            : profile.enableFingerprintAuthentication,
+      ),
       trailing: Switch(
         value: biometricEnabled.valueOrNull ?? false,
         onChanged: (value) => _handleBiometricToggle(context, ref, value),
@@ -314,6 +322,8 @@ class BiometricSettingTile extends ConsumerWidget {
     WidgetRef ref,
     bool value,
   ) async {
+    final profile = context.texts.app.profile;
+
     try {
       if (value) {
         final canCheckBiometrics =
@@ -325,8 +335,8 @@ class BiometricSettingTile extends ConsumerWidget {
               SnackBar(
                 content: Text(
                   Platform.isIOS
-                      ? 'Face ID is not available on this device'
-                      : 'Fingerprint authentication is not available on this device',
+                      ? profile.faceIdNotAvailable
+                      : profile.fingerprintNotAvailable,
                 ),
               ),
             );

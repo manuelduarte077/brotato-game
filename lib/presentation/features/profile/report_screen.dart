@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 
 import '../../../application/providers/reminder_providers.dart';
 import '../../../domain/models/reminder.dart';
@@ -18,13 +19,14 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
   Widget build(BuildContext context) {
     final reminders = ref.watch(remindersStreamProvider);
     final textTheme = Theme.of(context).textTheme;
+    final report = context.texts.app.report;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          'Reports',
+          report.title,
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,
@@ -36,7 +38,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
           if (reminderList.isEmpty) {
             return Center(
               child: Text(
-                'No payment data available',
+                report.noPaymentDataAvailable,
                 style: textTheme.titleMedium
                     ?.copyWith(fontWeight: FontWeight.w600),
               ),
@@ -62,21 +64,25 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
           );
         },
         loading: () => Center(child: CircularProgressIndicator.adaptive()),
-        error: (error, stack) => Center(child: Text('Error: $error')),
+        error: (error, stack) => Center(
+          child: Text(context.texts.app.error.generalError),
+        ),
       ),
     );
   }
 
   Widget _buildTimeFilter() {
+    final report = context.texts.app.report;
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _filterChip(TimeFilter.lastMonth, 'Last Month'),
+          _filterChip(TimeFilter.lastMonth, report.lastMonth),
           SizedBox(width: 8),
-          _filterChip(TimeFilter.last3Months, 'Last 3 Months'),
+          _filterChip(TimeFilter.last3Months, report.last3Months),
           SizedBox(width: 8),
-          _filterChip(TimeFilter.last6Months, 'Last 6 Months'),
+          _filterChip(TimeFilter.last6Months, report.last6Months),
         ],
       ),
     );
@@ -117,6 +123,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
 
   Widget _buildPaymentTrendsCard(
       BuildContext context, List<Reminder> reminders) {
+    final report = context.texts.app.report;
     final monthlyTotals = _calculateMonthlyTotals(reminders);
 
     final maxAmount = monthlyTotals.values.isEmpty
@@ -142,7 +149,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Payment Trends',
+                  report.paymentTrends,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: Theme.of(context).colorScheme.onSurface),
@@ -237,6 +244,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
 
   Widget _buildHighestPaymentsCard(
       BuildContext context, List<Reminder> reminders) {
+    final report = context.texts.app.report;
     final highestPayments = _getHighestPayments(reminders);
 
     final maxAmount = highestPayments.isEmpty
@@ -262,7 +270,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Highest Payments',
+                  report.highestPayments,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: Theme.of(context).colorScheme.onSurface),
@@ -339,6 +347,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
 
   Widget _buildCategoryDistributionCard(
       BuildContext context, List<Reminder> reminders) {
+    final report = context.texts.app.report;
     final categoryTotals = _calculateCategoryTotals(reminders);
     final total = categoryTotals.values.fold(0.0, (a, b) => a + b);
 
@@ -358,7 +367,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Category Distribution',
+                  report.categoryDistribution,
                   style: Theme.of(context)
                       .textTheme
                       .titleSmall
@@ -461,7 +470,8 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     }
 
     return Map.fromEntries(
-        monthlyTotals.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
+      monthlyTotals.entries.toList()..sort((a, b) => a.key.compareTo(b.key)),
+    );
   }
 
   List<Reminder> _getHighestPayments(List<Reminder> reminders) {
