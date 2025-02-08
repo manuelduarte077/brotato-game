@@ -19,8 +19,10 @@ class FilterDialog extends ConsumerWidget {
   Widget _buildMaterialDialog(
       BuildContext context, WidgetRef ref, FilterState filterState) {
     return AlertDialog.adaptive(
-      title: const Text('Filter Reminders',
-          style: TextStyle(fontWeight: FontWeight.bold)),
+      title: const Text(
+        'Filter Reminders',
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
       content: Container(
         constraints: const BoxConstraints(maxWidth: 400),
         child: Column(

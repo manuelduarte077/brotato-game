@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 import '../../domain/models/reminder.dart';
 
 class ReminderForm extends StatefulWidget {
@@ -94,30 +95,34 @@ class _ReminderFormState extends State<ReminderForm> {
   String _getHelperText(String? type, int? interval) {
     if (type == null || interval == null) return '';
 
+    final texts = context.texts.app.reminders;
+
     switch (type) {
       case 'Daily':
-        return 'Se repetirá cada $interval día(s)';
+        return 'Se repetirá cada $interval ${texts.days}';
       case 'Weekly':
-        return 'Se repetirá cada $interval semana(s)';
+        return 'Se repetirá cada $interval ${texts.weeks}';
       case 'Monthly':
-        return 'Se repetirá cada $interval mes(es)';
+        return 'Se repetirá cada $interval ${texts.months}';
       case 'Yearly':
-        return 'Se repetirá cada $interval año(s)';
+        return 'Se repetirá cada $interval ${texts.years}';
       default:
         return '';
     }
   }
 
   String _getSuffixText(String? type) {
+    final texts = context.texts.app.reminders;
+
     switch (type) {
       case 'Daily':
-        return 'días';
+        return texts.days;
       case 'Weekly':
-        return 'semanas';
+        return texts.weeks;
       case 'Monthly':
-        return 'meses';
+        return texts.months;
       case 'Yearly':
-        return 'años';
+        return texts.years;
       default:
         return '';
     }
@@ -126,6 +131,7 @@ class _ReminderFormState extends State<ReminderForm> {
   void _showCategoryBottomSheet() {
     final searchController = TextEditingController();
     List<String> filteredCategories = List.from(_categories);
+    final texts = context.texts.app.reminders;
 
     showModalBottomSheet(
       context: context,
@@ -154,10 +160,10 @@ class _ReminderFormState extends State<ReminderForm> {
                 padding: const EdgeInsets.all(16),
                 child: TextField(
                   controller: searchController,
-                  decoration: const InputDecoration(
-                    hintText: 'Buscar categoría...',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    hintText: texts.searchCategory,
+                    prefixIcon: const Icon(Icons.search),
+                    border: const OutlineInputBorder(),
                   ),
                   onChanged: (value) {
                     setState(() {
@@ -278,6 +284,8 @@ class _ReminderFormState extends State<ReminderForm> {
 
   @override
   Widget build(BuildContext context) {
+    final texts = context.texts.app.reminders;
+
     ///
     return Form(
       key: _formKey,
@@ -285,7 +293,7 @@ class _ReminderFormState extends State<ReminderForm> {
         padding: const EdgeInsets.all(16),
         children: [
           Text(
-            'Que pago quieres recordar',
+            texts.createReminder,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -294,13 +302,13 @@ class _ReminderFormState extends State<ReminderForm> {
           SizedBox(height: 20),
           TextFormField(
             controller: _titleController,
-            decoration: const InputDecoration(
-              labelText: 'Title',
+            decoration: InputDecoration(
+              labelText: texts.title,
               border: OutlineInputBorder(),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter a title';
+                return texts.titleRequired;
               }
               return null;
             },
@@ -308,8 +316,8 @@ class _ReminderFormState extends State<ReminderForm> {
           const SizedBox(height: 16),
           TextFormField(
             controller: _descriptionController,
-            decoration: const InputDecoration(
-              labelText: 'Description (optional)',
+            decoration: InputDecoration(
+              labelText: texts.description,
               border: OutlineInputBorder(),
             ),
             maxLines: 3,
@@ -317,8 +325,8 @@ class _ReminderFormState extends State<ReminderForm> {
           const SizedBox(height: 16),
           TextFormField(
             controller: _amountController,
-            decoration: const InputDecoration(
-              labelText: 'Amount',
+            decoration: InputDecoration(
+              labelText: texts.amount,
               border: OutlineInputBorder(),
               prefixText: '\$',
             ),
@@ -328,10 +336,10 @@ class _ReminderFormState extends State<ReminderForm> {
             ],
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter an amount';
+                return texts.amountRequired;
               }
               if (double.tryParse(value) == null) {
-                return 'Please enter a valid number';
+                return texts.amountInvalid;
               }
               return null;
             },
@@ -340,7 +348,7 @@ class _ReminderFormState extends State<ReminderForm> {
           TextFormField(
             readOnly: true,
             decoration: InputDecoration(
-              labelText: 'Categoría',
+              labelText: texts.category,
               border: const OutlineInputBorder(),
               suffixIcon: const Icon(Icons.arrow_drop_down),
             ),
@@ -349,7 +357,7 @@ class _ReminderFormState extends State<ReminderForm> {
           ),
           const SizedBox(height: 16),
           ListTile(
-            title: const Text('Due Date'),
+            title: Text(texts.dueDate),
             subtitle: Text(
               '${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}',
             ),
@@ -367,7 +375,7 @@ class _ReminderFormState extends State<ReminderForm> {
             },
           ),
           SwitchListTile(
-            title: const Text('Recurring Payment'),
+            title: Text(texts.recurringPayment),
             value: _isRecurring,
             onChanged: (value) {
               setState(() => _isRecurring = value);
@@ -377,7 +385,7 @@ class _ReminderFormState extends State<ReminderForm> {
             TextFormField(
               readOnly: true,
               decoration: InputDecoration(
-                labelText: 'Tipo de Recurrencia',
+                labelText: texts.recurrenceType,
                 border: const OutlineInputBorder(),
                 suffixIcon: const Icon(Icons.arrow_drop_down),
                 filled: true,
@@ -390,7 +398,7 @@ class _ReminderFormState extends State<ReminderForm> {
             TextFormField(
               initialValue: _recurrenceInterval?.toString(),
               decoration: InputDecoration(
-                labelText: 'Intervalo de Repetición',
+                labelText: texts.recurrenceInterval,
                 border: OutlineInputBorder(),
                 helperText:
                     _getHelperText(_recurrenceType, _recurrenceInterval),
@@ -429,8 +437,8 @@ class _ReminderFormState extends State<ReminderForm> {
                 );
               }
             },
-            child: const Text(
-              'Save',
+            child: Text(
+              texts.save,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
