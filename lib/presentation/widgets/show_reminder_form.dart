@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 import '../../domain/models/reminder.dart';
 
 class ShowReminderForm extends StatelessWidget {
@@ -11,35 +12,40 @@ class ShowReminderForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texts = context.texts.app.home;
+    final showReminder = context.texts.app.reminders;
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          'Detalles del Pago',
+          texts.paymentDetails,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
         SizedBox(height: 20),
-        _buildInfoField('Title', reminder.title),
+        _buildInfoField(showReminder.title, reminder.title),
         const SizedBox(height: 16),
-        _buildInfoField('Description', reminder.description ?? '', maxLines: 3),
+        _buildInfoField(showReminder.description, reminder.description ?? '',
+            maxLines: 3),
         const SizedBox(height: 16),
-        _buildInfoField('Amount', '\$${reminder.amount}'),
+        _buildInfoField(showReminder.amount, '\$${reminder.amount}'),
         const SizedBox(height: 16),
-        _buildInfoField('Category', reminder.category),
+        _buildInfoField(showReminder.category, reminder.category),
         const SizedBox(height: 16),
-        _buildInfoField('Due Date',
+        _buildInfoField(showReminder.dueDate,
             '${reminder.dueDate.year}-${reminder.dueDate.month}-${reminder.dueDate.day}'),
         const SizedBox(height: 16),
         _buildInfoField(
-            'Recurring Payment', reminder.isRecurring ? 'Yes' : 'No'),
+            showReminder.recurringPayment, reminder.isRecurring ? 'Yes' : 'No'),
         if (reminder.isRecurring) ...[
           const SizedBox(height: 16),
-          _buildInfoField('Recurrence Type', reminder.recurrenceType ?? ''),
+          _buildInfoField(
+              showReminder.recurrenceType, reminder.recurrenceType ?? ''),
           const SizedBox(height: 16),
-          _buildInfoField('Recurrence Interval',
+          _buildInfoField(showReminder.recurrenceInterval,
               reminder.recurrenceInterval?.toString() ?? ''),
         ],
       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 
 import 'calendar/calendar_screen.dart';
 import 'profile/profile_screen.dart';
@@ -35,6 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final texts = context.texts.app;
+
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -44,19 +47,19 @@ class _HomeScreenState extends State<HomeScreen> {
             _selectedIndex = index;
           });
         },
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.list_bullet),
-            label: 'List',
+            label: texts.list,
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.calendar),
-            label: 'Calendar',
+            label: texts.calendar.calendar,
           ),
           BottomNavigationBarItem(
             key: const Key('profile_button'),
             icon: Icon(CupertinoIcons.person),
-            label: 'Profile',
+            label: texts.profile.perfil,
           ),
         ],
       ),

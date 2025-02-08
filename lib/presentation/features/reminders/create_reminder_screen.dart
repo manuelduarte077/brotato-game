@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 import '../../../application/providers/reminder_providers.dart';
 import '../../widgets/reminder_form.dart';
 
@@ -9,6 +10,7 @@ class CreateReminderScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isBottomSheet = ModalRoute.of(context)?.settings.name == null;
+    final texts = context.texts.app.home;
 
     return Scaffold(
       appBar: isBottomSheet
@@ -18,7 +20,7 @@ class CreateReminderScreen extends ConsumerWidget {
                 icon: const Icon(Icons.close),
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              title: const Text('Create Reminder'),
+              title: Text(texts.createReminder),
             ),
       body: ReminderForm(
         onSubmit: (title, amount, dueDate, category, description, isRecurring,

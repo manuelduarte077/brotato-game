@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
@@ -21,6 +22,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     final reminders = ref.watch(remindersStreamProvider);
+    final texts = context.texts.app.calendar;
 
     return Material(
       child: CustomScrollView(
@@ -29,7 +31,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           SliverAppBar(
             pinned: true,
             title: Text(
-              'Calendar',
+              texts.calendar,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -114,7 +116,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           child: Row(
                             children: [
                               Text(
-                                'Upcoming Reminders',
+                                texts.upcomingReminders,
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                             ],
@@ -137,6 +139,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   void _showRemindersDialog(BuildContext context, List<Reminder> reminders) {
+    final texts = context.texts.app.calendar;
+
     showAdaptiveDialog(
       context: context,
       builder: (context) => Dialog(
@@ -149,7 +153,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Reminders for ${DateFormat('MMM d, yyyy').format(_selectedDay!)}',
+                '${texts.remindersFor} ${DateFormat('MMM d, yyyy').format(_selectedDay!)}',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 16),
@@ -171,7 +175,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
-                      'Amount: \$${reminder.amount.toStringAsFixed(2)}\n'
+                      '${texts.amount}: \$${reminder.amount.toStringAsFixed(2)}\n'
                       '${reminder.description ?? ""}',
                     ),
                     leading: Icon(
@@ -183,7 +187,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Close'),
+                child: Text(texts.close),
               ),
             ],
           ),
@@ -220,6 +224,8 @@ class _RemindersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texts = context.texts.app.calendar;
+
     final today = DateTime.now();
     final upcomingReminders = reminders
         .where((reminder) => reminder.dueDate.isAfter(today))
@@ -252,8 +258,8 @@ class _RemindersList extends StatelessWidget {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Text(
-              'Due: ${DateFormat('MMM d, yyyy').format(reminder.dueDate)}\n'
-              'Amount: \$${reminder.amount.toStringAsFixed(2)}',
+              '${texts.due}: ${DateFormat('MMM d, yyyy').format(reminder.dueDate)}\n'
+              '${texts.amount}: \$${reminder.amount.toStringAsFixed(2)}',
             ),
             leading: Icon(
               Icons.event,
