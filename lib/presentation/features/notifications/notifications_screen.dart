@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 
 import '../../../application/providers/notification_providers.dart';
 import '../../../infrastructure/services/notification_service.dart';
@@ -10,23 +11,33 @@ class NotificationsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifications = ref.watch(notificationHistoryProvider);
+    final texts = context.texts.app.notifications;
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Notifications',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          title: Text(
+            texts.title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          bottom: const TabBar(
-            labelStyle: TextStyle(fontSize: 12),
+          bottom: TabBar(
+            labelStyle: const TextStyle(fontSize: 12),
             automaticIndicatorColorAdjustment: true,
             splashFactory: NoSplash.splashFactory,
             tabs: [
-              Tab(text: 'Unread', icon: Icon(Icons.notifications_none)),
-              Tab(text: 'Recent', icon: Icon(Icons.notifications_active)),
-              Tab(text: 'Read', icon: Icon(Icons.notifications_none)),
+              Tab(
+                text: texts.unread,
+                icon: const Icon(Icons.notifications_none),
+              ),
+              Tab(
+                text: texts.recent,
+                icon: const Icon(Icons.notifications_active),
+              ),
+              Tab(
+                text: texts.read,
+                icon: const Icon(Icons.notifications_none),
+              ),
             ],
           ),
           actions: [
@@ -40,18 +51,18 @@ class NotificationsScreen extends ConsumerWidget {
           children: [
             _NotificationList(
               notifications: notifications.where((n) => !n.isRead).toList(),
-              emptyMessage: 'No unread notifications',
+              emptyMessage: texts.noUnreadNotifications,
             ),
             _NotificationList(
               notifications: notifications
                   .where((n) => n.timestamp.isAfter(
                       DateTime.now().subtract(const Duration(days: 7))))
                   .toList(),
-              emptyMessage: 'No recent notifications',
+              emptyMessage: texts.noRecentNotifications,
             ),
             _NotificationList(
               notifications: notifications.where((n) => n.isRead).toList(),
-              emptyMessage: 'No read notifications',
+              emptyMessage: texts.noReadNotifications,
               showClearButton: true,
             ),
           ],
@@ -74,7 +85,7 @@ class _NotificationSettings extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(notificationSettingsProvider);
     final notificationService = NotificationService();
-
+    final texts = context.texts.app.notifications;
     return Padding(
       padding: const EdgeInsets.all(18),
       child: Column(
@@ -82,19 +93,19 @@ class _NotificationSettings extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Notification Settings',
+            texts.notificationSettings,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 16),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: const Text(
-              'Enable Notifications',
-              style: TextStyle(fontSize: 16),
+            title: Text(
+              texts.enableNotifications,
+              style: const TextStyle(fontSize: 16),
             ),
-            subtitle: const Text(
-              'Receive payment reminders',
-              style: TextStyle(fontSize: 12),
+            subtitle: Text(
+              texts.receivePaymentReminders,
+              style: const TextStyle(fontSize: 12),
             ),
             value: settings.localNotificationsEnabled,
             onChanged: (value) async {
@@ -105,10 +116,10 @@ class _NotificationSettings extends ConsumerWidget {
                 if (!hasPermission) {
                   if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                    SnackBar(
                       content: Text(
-                        'Please enable notifications in settings',
-                        style: TextStyle(fontSize: 12),
+                        texts.pleaseEnableNotificationsInSettings,
+                        style: const TextStyle(fontSize: 12),
                       ),
                     ),
                   );
@@ -121,7 +132,7 @@ class _NotificationSettings extends ConsumerWidget {
             },
           ),
           const Divider(),
-          const Text('Notify me before due date:'),
+          Text(texts.notifyMeBeforeDueDate),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -156,6 +167,8 @@ class _NotificationList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texts = context.texts.app.notifications;
+
     if (notifications.isEmpty) {
       return Center(
         child: Column(
@@ -176,7 +189,7 @@ class _NotificationList extends ConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton.icon(
               icon: const Icon(Icons.delete_sweep),
-              label: const Text('Clear Read Notifications'),
+              label: Text(texts.clearReadNotifications),
               onPressed: () {
                 ref
                     .read(notificationHistoryProvider.notifier)
@@ -200,7 +213,6 @@ class _NotificationList extends ConsumerWidget {
 
 class _NotificationTile extends ConsumerWidget {
   final NotificationRecord notification;
-
   const _NotificationTile({required this.notification});
 
   @override
@@ -219,7 +231,7 @@ class _NotificationTile extends ConsumerWidget {
         children: [
           Text(notification.body),
           Text(
-            _formatTimestamp(notification.timestamp),
+            _formatTimestamp(notification.timestamp, context),
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
@@ -235,23 +247,26 @@ class _NotificationTile extends ConsumerWidget {
     );
   }
 
-  String _formatTimestamp(DateTime timestamp) {
+  String _formatTimestamp(DateTime timestamp, BuildContext context) {
     final now = DateTime.now();
     final difference = now.difference(timestamp);
+    final texts = context.texts.app.notifications;
 
     if (difference.inDays > 0) {
-      return '${difference.inDays}d ago';
+      return texts.daysAgo(count: difference.inDays);
     } else if (difference.inHours > 0) {
-      return '${difference.inHours}h ago';
+      return texts.hoursAgo(count: difference.inHours);
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}m ago';
+      return texts.minutesAgo(count: difference.inMinutes);
     } else {
-      return 'Just now';
+      return texts.justNow;
     }
   }
 
   void _showNotificationDetails(
       BuildContext context, NotificationRecord notification) {
+    final texts = context.texts.app.notifications;
+
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
@@ -269,7 +284,7 @@ class _NotificationTile extends ConsumerWidget {
             Text(notification.body),
             const SizedBox(height: 8),
             Text(
-              'Received: ${notification.timestamp.toString()}',
+              texts.received(timestamp: notification.timestamp.toString()),
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 16),
@@ -278,7 +293,7 @@ class _NotificationTile extends ConsumerWidget {
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Close'),
+                  child: Text(texts.close),
                 ),
               ],
             ),
@@ -302,12 +317,14 @@ class _ReminderDayChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texts = context.texts.app.notifications;
+
     return FilterChip(
       avatar: Icon(
         Icons.notifications,
         color: isSelected ? Theme.of(context).colorScheme.onPrimary : null,
       ),
-      label: Text('$days days before'),
+      label: Text(texts.daysBefore(count: days)),
       selected: isSelected,
       onSelected: onSelected,
     );
