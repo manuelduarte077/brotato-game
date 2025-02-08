@@ -3,6 +3,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 import 'app/app.dart';
 import 'firebase_options.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -36,8 +37,10 @@ void main() async {
   };
 
   runApp(
-    const ProviderScope(
-      child: MyApp(),
+    ProviderScope(
+      child: TranslationProvider(
+        child: MyApp(),
+      ),
     ),
   );
 }
