@@ -1,11 +1,11 @@
-# pay_reminder
+# Never Forgett
 
 ## Features
 
 - Creación de recordatorios:
   Agregar nuevos pagos con detalles como monto, fecha de vencimiento, descripción y categoría.
   Establecer recordatorios recurrentes (semanales, mensuales, anuales).
-
+  
 - Listas de pagos:
   Organizar los pagos en diferentes listas (por categoría, proveedor, etc.).
   Priorizar pagos importantes.

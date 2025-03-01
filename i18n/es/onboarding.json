@@ -1,0 +1,23 @@
+{
+  "title": "¡Bienvenido a Never Forgett!",
+  "button": "¡Empezar!",
+  "features": {
+    "smart_reminders": {
+      "title": "Recordatorios Inteligentes",
+      "description": "Nunca olvides un pago importante con nuestros recordatorios personalizables"
+    },
+    "calendar_view": {
+      "title": "Vista de Calendario",
+      "description": "Visualiza todos tus pagos en un calendario intuitivo"
+    },
+    "reports_and_statistics": {
+      "title": "Reportes y Estadísticas",
+      "description": "Analiza tus gastos y mantén un control de tus finanzas"
+    },
+    "cloud_sync": {
+      "title": "Sincronización en la Nube",
+      "description": "Mantén tus datos seguros y sincronizados en todos tus dispositivos"
+    }
+  }
+}
+
