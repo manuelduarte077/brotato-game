@@ -11,9 +11,9 @@ class OnboardingBottomSheet extends ConsumerWidget {
     final texts = context.texts.onboarding;
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.9,
+      initialChildSize: 0.6,
+      minChildSize: 0.5,
       maxChildSize: 0.9,
-      minChildSize: 0.9,
       expand: false,
       builder: (context, scrollController) => Container(
         decoration: BoxDecoration(
@@ -22,7 +22,7 @@ class OnboardingBottomSheet extends ConsumerWidget {
         ),
         child: Column(
           children: [
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             Container(
               width: 40,
               height: 4,
@@ -31,7 +31,6 @@ class OnboardingBottomSheet extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const SizedBox(height: 20),
             Expanded(
               child: ListView(
                 controller: scrollController,
@@ -80,11 +79,13 @@ class OnboardingBottomSheet extends ConsumerWidget {
                         vertical: 12,
                       ),
                     ),
-                    onPressed: () {
-                      ref
-                          .read(onboardingProvider.notifier)
+                    onPressed: () async {
+                      await ref
+                          .read(hasSeenOnboardingProvider.notifier)
                           .markOnboardingAsSeen();
-                      Navigator.of(context).pop();
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
                     },
                     child: Text(
                       texts.button,

@@ -31,33 +31,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     _initQuickActions();
-    _checkOnboarding();
   }
 
   Future<void> _initQuickActions() async {
     await QuickActionsService().init(context);
   }
 
-  Future<void> _checkOnboarding() async {
-    // Delay to ensure the screen is built
-    await Future.delayed(Duration.zero);
-    if (!mounted) return;
-
-    final hasSeenOnboarding = ref.read(onboardingProvider);
-    if (!hasSeenOnboarding) {
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        isDismissible: false,
-        enableDrag: false,
-        showDragHandle: false,
-        builder: (context) => const OnboardingBottomSheet(),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    ref.listen(hasSeenOnboardingProvider, (previous, next) {
+      if (!next.value!) {
+        _showOnboarding();
+      }
+    });
+
     final texts = context.texts.app;
 
     return Scaffold(
@@ -73,18 +60,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.list_bullet),
             label: texts.list,
+            tooltip: texts.list,
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.calendar),
             label: texts.calendar.calendar,
+            tooltip: texts.calendar.calendar,
           ),
           BottomNavigationBarItem(
             key: const Key('profile_button'),
             icon: Icon(CupertinoIcons.person),
             label: texts.profile.perfil,
+            tooltip: texts.profile.perfil,
           ),
         ],
       ),
+    );
+  }
+
+  void _showOnboarding() {
+    if (!mounted) return;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      showDragHandle: true,
+      builder: (context) => const OnboardingBottomSheet(),
     );
   }
 }
