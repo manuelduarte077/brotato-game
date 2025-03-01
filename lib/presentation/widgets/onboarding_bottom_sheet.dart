@@ -11,95 +11,80 @@ class OnboardingBottomSheet extends ConsumerWidget {
     final texts = context.texts.onboarding;
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.6,
-      minChildSize: 0.5,
+      initialChildSize: 0.9,
+      minChildSize: 0.9,
       maxChildSize: 0.9,
       expand: false,
-      builder: (context, scrollController) => Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          children: [
-            const SizedBox(height: 8),
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                controller: scrollController,
-                padding: const EdgeInsets.all(24),
-                children: [
-                  Text(
-                    texts.title,
+      builder: (context, scrollController) => Column(
+        children: [
+          Expanded(
+            child: ListView(
+              controller: scrollController,
+              padding: const EdgeInsets.all(24),
+              children: [
+                Text(
+                  texts.title,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                _buildFeatureItem(
+                  context,
+                  Icons.notifications_active,
+                  texts.features.smart_reminders.title,
+                  texts.features.smart_reminders.description,
+                ),
+                const SizedBox(height: 16),
+                _buildFeatureItem(
+                  context,
+                  Icons.calendar_today,
+                  texts.features.calendar_view.title,
+                  texts.features.calendar_view.description,
+                ),
+                const SizedBox(height: 16),
+                _buildFeatureItem(
+                  context,
+                  Icons.bar_chart,
+                  texts.features.reports_and_statistics.title,
+                  texts.features.reports_and_statistics.description,
+                ),
+                const SizedBox(height: 16),
+                _buildFeatureItem(
+                  context,
+                  Icons.sync,
+                  texts.features.cloud_sync.title,
+                  texts.features.cloud_sync.description,
+                ),
+                const SizedBox(height: 32),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12,
+                    ),
+                  ),
+                  onPressed: () async {
+                    await ref
+                        .read(hasSeenOnboardingProvider.notifier)
+                        .markOnboardingAsSeen();
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: Text(
+                    texts.button,
                     style: const TextStyle(
-                      fontSize: 24,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 24),
-                  _buildFeatureItem(
-                    context,
-                    Icons.notifications_active,
-                    texts.features.smart_reminders.title,
-                    texts.features.smart_reminders.description,
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFeatureItem(
-                    context,
-                    Icons.calendar_today,
-                    texts.features.calendar_view.title,
-                    texts.features.calendar_view.description,
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFeatureItem(
-                    context,
-                    Icons.bar_chart,
-                    texts.features.reports_and_statistics.title,
-                    texts.features.reports_and_statistics.description,
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFeatureItem(
-                    context,
-                    Icons.sync,
-                    texts.features.cloud_sync.title,
-                    texts.features.cloud_sync.description,
-                  ),
-                  const SizedBox(height: 32),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                      ),
-                    ),
-                    onPressed: () async {
-                      await ref
-                          .read(hasSeenOnboardingProvider.notifier)
-                          .markOnboardingAsSeen();
-                      if (context.mounted) {
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    child: Text(
-                      texts.button,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
