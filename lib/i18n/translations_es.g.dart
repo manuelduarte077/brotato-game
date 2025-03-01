@@ -35,6 +35,7 @@ class TranslationsEs implements Translations {
 
 	// Translations
 	@override late final _TranslationsAppEs app = _TranslationsAppEs._(_root);
+	@override late final _TranslationsOnboardingEs onboarding = _TranslationsOnboardingEs._(_root);
 }
 
 // Path: app
@@ -54,6 +55,18 @@ class _TranslationsAppEs implements TranslationsAppEn {
 	@override late final _TranslationsAppNotificationsEs notifications = _TranslationsAppNotificationsEs._(_root);
 	@override late final _TranslationsAppRemindersEs reminders = _TranslationsAppRemindersEs._(_root);
 	@override late final _TranslationsAppCalendarEs calendar = _TranslationsAppCalendarEs._(_root);
+}
+
+// Path: onboarding
+class _TranslationsOnboardingEs implements TranslationsOnboardingEn {
+	_TranslationsOnboardingEs._(this._root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => TranslationOverrides.string(_root.$meta, 'onboarding.title', {}) ?? '¡Bienvenido a Never Forgett!';
+	@override String get button => TranslationOverrides.string(_root.$meta, 'onboarding.button', {}) ?? '¡Empezar!';
+	@override late final _TranslationsOnboardingFeaturesEs features = _TranslationsOnboardingFeaturesEs._(_root);
 }
 
 // Path: app.error
@@ -199,6 +212,63 @@ class _TranslationsAppCalendarEs implements TranslationsAppCalendarEn {
 	@override String get remindersFor => TranslationOverrides.string(_root.$meta, 'app.calendar.remindersFor', {}) ?? 'Recordatorios para';
 }
 
+// Path: onboarding.features
+class _TranslationsOnboardingFeaturesEs implements TranslationsOnboardingFeaturesEn {
+	_TranslationsOnboardingFeaturesEs._(this._root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override late final _TranslationsOnboardingFeaturesSmartRemindersEs smart_reminders = _TranslationsOnboardingFeaturesSmartRemindersEs._(_root);
+	@override late final _TranslationsOnboardingFeaturesCalendarViewEs calendar_view = _TranslationsOnboardingFeaturesCalendarViewEs._(_root);
+	@override late final _TranslationsOnboardingFeaturesReportsAndStatisticsEs reports_and_statistics = _TranslationsOnboardingFeaturesReportsAndStatisticsEs._(_root);
+	@override late final _TranslationsOnboardingFeaturesCloudSyncEs cloud_sync = _TranslationsOnboardingFeaturesCloudSyncEs._(_root);
+}
+
+// Path: onboarding.features.smart_reminders
+class _TranslationsOnboardingFeaturesSmartRemindersEs implements TranslationsOnboardingFeaturesSmartRemindersEn {
+	_TranslationsOnboardingFeaturesSmartRemindersEs._(this._root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => TranslationOverrides.string(_root.$meta, 'onboarding.features.smart_reminders.title', {}) ?? 'Recordatorios Inteligentes';
+	@override String get description => TranslationOverrides.string(_root.$meta, 'onboarding.features.smart_reminders.description', {}) ?? 'Nunca olvides un pago importante con nuestros recordatorios personalizables';
+}
+
+// Path: onboarding.features.calendar_view
+class _TranslationsOnboardingFeaturesCalendarViewEs implements TranslationsOnboardingFeaturesCalendarViewEn {
+	_TranslationsOnboardingFeaturesCalendarViewEs._(this._root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => TranslationOverrides.string(_root.$meta, 'onboarding.features.calendar_view.title', {}) ?? 'Vista de Calendario';
+	@override String get description => TranslationOverrides.string(_root.$meta, 'onboarding.features.calendar_view.description', {}) ?? 'Visualiza todos tus pagos en un calendario intuitivo';
+}
+
+// Path: onboarding.features.reports_and_statistics
+class _TranslationsOnboardingFeaturesReportsAndStatisticsEs implements TranslationsOnboardingFeaturesReportsAndStatisticsEn {
+	_TranslationsOnboardingFeaturesReportsAndStatisticsEs._(this._root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => TranslationOverrides.string(_root.$meta, 'onboarding.features.reports_and_statistics.title', {}) ?? 'Reportes y Estadísticas';
+	@override String get description => TranslationOverrides.string(_root.$meta, 'onboarding.features.reports_and_statistics.description', {}) ?? 'Analiza tus gastos y mantén un control de tus finanzas';
+}
+
+// Path: onboarding.features.cloud_sync
+class _TranslationsOnboardingFeaturesCloudSyncEs implements TranslationsOnboardingFeaturesCloudSyncEn {
+	_TranslationsOnboardingFeaturesCloudSyncEs._(this._root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => TranslationOverrides.string(_root.$meta, 'onboarding.features.cloud_sync.title', {}) ?? 'Sincronización en la Nube';
+	@override String get description => TranslationOverrides.string(_root.$meta, 'onboarding.features.cloud_sync.description', {}) ?? 'Mantén tus datos seguros y sincronizados en todos tus dispositivos';
+}
+
 /// Flat map(s) containing all translations.
 /// Only for edge cases! For simple maps, use the map function of this library.
 extension on TranslationsEs {
@@ -287,6 +357,16 @@ extension on TranslationsEs {
 			case 'app.calendar.amount': return TranslationOverrides.string(_root.$meta, 'app.calendar.amount', {}) ?? 'Cantidad';
 			case 'app.calendar.due': return TranslationOverrides.string(_root.$meta, 'app.calendar.due', {}) ?? 'Vencimiento';
 			case 'app.calendar.remindersFor': return TranslationOverrides.string(_root.$meta, 'app.calendar.remindersFor', {}) ?? 'Recordatorios para';
+			case 'onboarding.title': return TranslationOverrides.string(_root.$meta, 'onboarding.title', {}) ?? '¡Bienvenido a Never Forgett!';
+			case 'onboarding.button': return TranslationOverrides.string(_root.$meta, 'onboarding.button', {}) ?? '¡Empezar!';
+			case 'onboarding.features.smart_reminders.title': return TranslationOverrides.string(_root.$meta, 'onboarding.features.smart_reminders.title', {}) ?? 'Recordatorios Inteligentes';
+			case 'onboarding.features.smart_reminders.description': return TranslationOverrides.string(_root.$meta, 'onboarding.features.smart_reminders.description', {}) ?? 'Nunca olvides un pago importante con nuestros recordatorios personalizables';
+			case 'onboarding.features.calendar_view.title': return TranslationOverrides.string(_root.$meta, 'onboarding.features.calendar_view.title', {}) ?? 'Vista de Calendario';
+			case 'onboarding.features.calendar_view.description': return TranslationOverrides.string(_root.$meta, 'onboarding.features.calendar_view.description', {}) ?? 'Visualiza todos tus pagos en un calendario intuitivo';
+			case 'onboarding.features.reports_and_statistics.title': return TranslationOverrides.string(_root.$meta, 'onboarding.features.reports_and_statistics.title', {}) ?? 'Reportes y Estadísticas';
+			case 'onboarding.features.reports_and_statistics.description': return TranslationOverrides.string(_root.$meta, 'onboarding.features.reports_and_statistics.description', {}) ?? 'Analiza tus gastos y mantén un control de tus finanzas';
+			case 'onboarding.features.cloud_sync.title': return TranslationOverrides.string(_root.$meta, 'onboarding.features.cloud_sync.title', {}) ?? 'Sincronización en la Nube';
+			case 'onboarding.features.cloud_sync.description': return TranslationOverrides.string(_root.$meta, 'onboarding.features.cloud_sync.description', {}) ?? 'Mantén tus datos seguros y sincronizados en todos tus dispositivos';
 			default: return null;
 		}
 	}

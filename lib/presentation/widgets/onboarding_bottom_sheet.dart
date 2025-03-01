@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pay_reminder/i18n/translations.g.dart';
 import '../../application/providers/onboarding_provider.dart';
 
 class OnboardingBottomSheet extends ConsumerWidget {
@@ -7,6 +8,8 @@ class OnboardingBottomSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final texts = context.texts.onboarding;
+
     return DraggableScrollableSheet(
       initialChildSize: 0.9,
       maxChildSize: 0.9,
@@ -34,9 +37,9 @@ class OnboardingBottomSheet extends ConsumerWidget {
                 controller: scrollController,
                 padding: const EdgeInsets.all(24),
                 children: [
-                  const Text(
-                    '¡Bienvenido a Never Forgett!',
-                    style: TextStyle(
+                  Text(
+                    texts.title,
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
@@ -46,29 +49,29 @@ class OnboardingBottomSheet extends ConsumerWidget {
                   _buildFeatureItem(
                     context,
                     Icons.notifications_active,
-                    'Recordatorios Inteligentes',
-                    'Nunca olvides un pago importante con nuestros recordatorios personalizables',
+                    texts.features.smart_reminders.title,
+                    texts.features.smart_reminders.description,
                   ),
                   const SizedBox(height: 16),
                   _buildFeatureItem(
                     context,
                     Icons.calendar_today,
-                    'Vista de Calendario',
-                    'Visualiza todos tus pagos en un calendario intuitivo',
+                    texts.features.calendar_view.title,
+                    texts.features.calendar_view.description,
                   ),
                   const SizedBox(height: 16),
                   _buildFeatureItem(
                     context,
                     Icons.bar_chart,
-                    'Reportes y Estadísticas',
-                    'Analiza tus gastos y mantén un control de tus finanzas',
+                    texts.features.reports_and_statistics.title,
+                    texts.features.reports_and_statistics.description,
                   ),
                   const SizedBox(height: 16),
                   _buildFeatureItem(
                     context,
                     Icons.sync,
-                    'Sincronización en la Nube',
-                    'Mantén tus datos seguros y sincronizados en todos tus dispositivos',
+                    texts.features.cloud_sync.title,
+                    texts.features.cloud_sync.description,
                   ),
                   const SizedBox(height: 32),
                   FilledButton(
@@ -83,9 +86,9 @@ class OnboardingBottomSheet extends ConsumerWidget {
                           .markOnboardingAsSeen();
                       Navigator.of(context).pop();
                     },
-                    child: const Text(
-                      '¡Empezar!',
-                      style: TextStyle(
+                    child: Text(
+                      texts.button,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
