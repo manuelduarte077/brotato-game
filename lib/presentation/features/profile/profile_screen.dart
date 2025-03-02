@@ -13,6 +13,12 @@ import 'package:intl/intl.dart';
 import '../notifications/notifications_screen.dart';
 import 'report_screen.dart';
 import '../../../application/providers/local_auth_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../../application/providers/reset_provider.dart';
+
+final Uri _url = Uri.parse(
+  'https://privacy.donmanuel.dev/never_forgett/index.html',
+);
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -37,6 +43,51 @@ class ProfileScreen extends ConsumerWidget {
             ),
           ),
           floating: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  showDragHandle: true,
+                  builder: (context) => Column(
+                    children: [
+                      /// Policy
+                      ListTile(
+                        title: Text('Política de privacidad'),
+                        leading: const Icon(Icons.privacy_tip_outlined),
+                        onTap: () {
+                          _launchUrl();
+                        },
+                      ),
+
+                      /// Eliminar todo
+                      ListTile(
+                        leading: const Icon(
+                          Icons.delete_forever,
+                          color: Colors.red,
+                        ),
+                        title: Text(
+                          'Eliminar todos los datos',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: const Text(
+                          'Esta acción no se puede deshacer',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        onTap: () {
+                          _showResetConfirmation(context, ref);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         SliverList(
           delegate: SliverChildListDelegate(
@@ -192,6 +243,12 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
   String _getSyncStatusText(WidgetRef ref, context) {
     final syncState = ref.watch(syncNotifierProvider);
     final profile = context.texts.profile;
@@ -286,6 +343,75 @@ class ProfileScreen extends ConsumerWidget {
           ],
         ),
       );
+    }
+  }
+
+  Future<void> _showResetConfirmation(
+      BuildContext context, WidgetRef ref) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          '¿Eliminar todos los datos?',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: const Text(
+          'Esta acción eliminará todos tus recordatorios y configuraciones. '
+          'Esta acción no se puede deshacer.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text(
+              'Cancelar',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text(
+              'Eliminar todo',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true && context.mounted) {
+      try {
+        await ref.read(resetAppProvider).resetAllData();
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Todos los datos han sido eliminados'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error al eliminar los datos: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
     }
   }
 }
