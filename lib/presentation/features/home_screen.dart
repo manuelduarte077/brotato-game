@@ -58,7 +58,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.list_bullet),
+            icon: Icon(CupertinoIcons.list_bullet_below_rectangle),
             label: texts.list,
             tooltip: texts.list,
           ),
