@@ -42,6 +42,7 @@ class _AuthGateState extends ConsumerState<AuthGate>
 
   Future<void> _authenticate() async {
     final localAuth = LocalAuthService();
+
     if (!await localAuth.isBiometricEnabled()) {
       setState(() => _authenticated = true);
       return;

@@ -1,5 +1,8 @@
 import '../models/reminder.dart';
 
+///{@template ReminderRepository}
+/// Repository for managing reminders.
+///{@endtemplate}
 abstract class ReminderRepository {
   Future<List<Reminder>> getAllReminders();
   Future<Reminder?> getReminder(int id);

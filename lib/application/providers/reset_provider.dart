@@ -13,15 +13,12 @@ class ResetAppService {
 
   Future<void> resetAllData() async {
     try {
-      // Eliminar todos los recordatorios de la base de datos
       final db = _ref.read(databaseProvider);
       await (db.delete(db.reminders)).go();
 
-      // Limpiar SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.clear();
 
-      // Reiniciar providers
       _ref.invalidate(languageProvider);
       _ref.invalidate(themeProvider);
     } catch (e) {

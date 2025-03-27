@@ -15,6 +15,7 @@ class ThemeNotifier extends StateNotifier<AsyncValue<bool>> {
 
   Future<void> _loadTheme() async {
     state = const AsyncValue.loading();
+
     try {
       final prefs = await SharedPreferences.getInstance();
       final isDarkMode = prefs.getBool(_themeKey) ?? false;
@@ -26,6 +27,7 @@ class ThemeNotifier extends StateNotifier<AsyncValue<bool>> {
 
   Future<void> toggleTheme() async {
     final currentMode = state.value ?? false;
+
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(_themeKey, !currentMode);

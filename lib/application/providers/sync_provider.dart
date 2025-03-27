@@ -41,6 +41,7 @@ class SyncNotifier extends StateNotifier<SyncState> {
 
     try {
       final repository = _ref.read(reminderRepositoryProvider);
+
       if (repository is HybridReminderRepository) {
         await repository.syncFromRemote();
         state = SyncState(

@@ -88,6 +88,7 @@ class LocalAuthService {
 
   Future<bool> isBiometricEnabled() async {
     final prefs = await SharedPreferences.getInstance();
+
     return prefs.getBool(_biometricEnabledKey) ?? false;
   }
 }

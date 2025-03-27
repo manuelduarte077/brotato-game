@@ -21,14 +21,12 @@ class QuickActionsService {
         const ShortcutItem(
           type: 'new_reminder',
           localizedTitle: 'New Reminder',
-          icon: 'ic_launcher',
-          // icon: 'ic_shortcut_add',
+          icon: 'launch_background',
         ),
         const ShortcutItem(
           type: 'view_calendar',
           localizedTitle: 'View Calendar',
-          icon: 'ic_launcher',
-          // icon: 'ic_shortcut_calendar',
+          icon: 'launch_background',
         ),
       ]);
     } catch (e) {

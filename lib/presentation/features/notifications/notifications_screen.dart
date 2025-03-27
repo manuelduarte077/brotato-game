@@ -86,6 +86,7 @@ class _NotificationSettings extends ConsumerWidget {
     final settings = ref.watch(notificationSettingsProvider);
     final notificationService = NotificationService();
     final texts = context.texts.app.notifications;
+
     return Padding(
       padding: const EdgeInsets.all(18),
       child: Column(

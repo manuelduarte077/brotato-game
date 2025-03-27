@@ -37,10 +37,7 @@ class ProfileScreen extends ConsumerWidget {
           pinned: true,
           title: Text(
             profile.perfil,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           floating: true,
           actions: [
@@ -90,154 +87,136 @@ class ProfileScreen extends ConsumerWidget {
           ],
         ),
         SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              SizedBox(height: 10),
-              if (authState.isLoading)
-                const Center(child: CircularProgressIndicator.adaptive()),
-              if (authState.error != null)
-                Text(
-                  authState.error!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              if (!authState.isLoading)
-                authState.user == null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        child: FilledButton(
-                          onPressed: () {
-                            ref
-                                .read(authStateProvider.notifier)
-                                .signInWithGoogle();
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.login),
-                              SizedBox(width: 8),
-                              Text(profile.signInWithGoogle),
-                            ],
-                          ),
-                        ),
-                      )
-                    : Column(
-                        children: [
-                          ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                authState.user?.photoURL ??
-                                    'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-                              ),
-                            ),
-                            title: Text(authState.user?.displayName ?? ''),
-                            subtitle: Text(authState.user?.email ?? ''),
-                          ),
-                        ],
-                      ),
-              const SizedBox(height: 32),
+          delegate: SliverChildListDelegate([
+            SizedBox(height: 10),
+            // if (authState.isLoading)
+            //   const Center(child: CircularProgressIndicator.adaptive()),
+            // if (authState.error != null)
+            //   Text(authState.error!, style: const TextStyle(color: Colors.red)),
+            // if (!authState.isLoading)
+            //   authState.user == null
+            //       ? Padding(
+            //           padding: const EdgeInsets.symmetric(
+            //             horizontal: 16,
+            //             vertical: 8,
+            //           ),
+            //           child: FilledButton(
+            //             onPressed: () {
+            //               ref
+            //                   .read(authStateProvider.notifier)
+            //                   .signInWithGoogle();
+            //             },
+            //             child: Row(
+            //               mainAxisSize: MainAxisSize.min,
+            //               children: [
+            //                 Icon(Icons.login),
+            //                 SizedBox(width: 8),
+            //                 Text(profile.signInWithGoogle),
+            //               ],
+            //             ),
+            //           ),
+            //         )
+            //       : Column(
+            //           children: [
+            //             ListTile(
+            //               leading: CircleAvatar(
+            //                 backgroundImage: NetworkImage(
+            //                   authState.user?.photoURL ??
+            //                       'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
+            //                 ),
+            //               ),
+            //               title: Text(authState.user?.displayName ?? ''),
+            //               subtitle: Text(authState.user?.email ?? ''),
+            //             ),
+            //           ],
+            //         ),
 
-              /// Theme Toggle (disabled for now)
-              // ListTile(
-              //   leading: const Icon(Icons.brightness_6_outlined),
-              //   title: Text(profile.darkMode),
-              //   trailing: Switch(
-              //     value: isDarkModeAsync.valueOrNull ?? false,
-              //     onChanged: (value) {
-              //       ref.read(themeProvider.notifier).toggleTheme();
-              //     },
-              //   ),
-              // ),
+            /// Theme Toggle (disabled for now)
+            // ListTile(
+            //   leading: const Icon(Icons.brightness_6_outlined),
+            //   title: Text(profile.darkMode),
+            //   trailing: Switch(
+            //     value: isDarkModeAsync.valueOrNull ?? false,
+            //     onChanged: (value) {
+            //       ref.read(themeProvider.notifier).toggleTheme();
+            //     },
+            //   ),
+            // ),
 
-              // Language Selection
-              ListTile(
-                leading: const Icon(Icons.language_outlined),
-                title: Text(
-                  profile.language,
-                  style: TextStyle(fontSize: 16),
-                ),
-                trailing: Text(
-                  currentLanguage == 'en' ? profile.english : profile.spanish,
-                  style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                ),
-                onTap: () =>
-                    _showLanguageSelector(context, ref, currentLanguage),
+            // Language Selection
+            ListTile(
+              leading: const Icon(Icons.language_outlined),
+              title: Text(profile.language, style: TextStyle(fontSize: 16)),
+              trailing: Text(
+                currentLanguage == 'en' ? profile.english : profile.spanish,
+                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
+              onTap: () => _showLanguageSelector(context, ref, currentLanguage),
+            ),
 
-              /// Habilitar Face ID (iOS), Touch ID (Android)
-              if (Theme.of(context).platform == TargetPlatform.iOS ||
-                  Theme.of(context).platform == TargetPlatform.android)
-                const BiometricSettingTile(),
+            /// Habilitar Face ID (iOS), Touch ID (Android)
+            if (Theme.of(context).platform == TargetPlatform.iOS ||
+                Theme.of(context).platform == TargetPlatform.android)
+              const BiometricSettingTile(),
 
-              /// Report
+            /// Report
+            ListTile(
+              leading: const Icon(Icons.bar_chart_outlined),
+              title: Text(profile.report, style: TextStyle(fontSize: 16)),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ReportScreen()),
+                );
+              },
+            ),
+
+            /// Sync
+            if (authState.user != null)
               ListTile(
-                leading: const Icon(Icons.bar_chart_outlined),
-                title: Text(
-                  profile.report,
-                  style: TextStyle(fontSize: 16),
-                ),
+                leading: const Icon(Icons.sync_outlined),
+                title: Text(profile.sync, style: TextStyle(fontSize: 16)),
+                subtitle: Text(_getSyncStatusText(ref, context)),
+                trailing: _buildSyncIndicator(ref),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ReportScreen(),
-                    ),
-                  );
+                  ref.read(syncNotifierProvider.notifier).syncFromRemote();
                 },
               ),
 
-              /// Sync
-              if (authState.user != null)
-                ListTile(
-                  leading: const Icon(Icons.sync_outlined),
-                  title: Text(
-                    profile.sync,
-                    style: TextStyle(fontSize: 16),
+            // Notifications Settings
+            ListTile(
+              leading: const Icon(Icons.notifications_outlined),
+              title: Text(
+                profile.notifications,
+                style: TextStyle(fontSize: 16),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NotificationsScreen(),
                   ),
-                  subtitle: Text(_getSyncStatusText(ref, context)),
-                  trailing: _buildSyncIndicator(ref),
-                  onTap: () {
-                    ref.read(syncNotifierProvider.notifier).syncFromRemote();
-                  },
-                ),
+                );
+              },
+            ),
 
-              // Notifications Settings
+            /// Cerrar sesión
+            if (authState.user != null)
               ListTile(
-                leading: const Icon(Icons.notifications_outlined),
+                leading: const Icon(Icons.logout_outlined),
                 title: Text(
-                  profile.notifications,
-                  style: TextStyle(fontSize: 16),
+                  profile.logout,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
                 ),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NotificationsScreen(),
-                    ),
-                  );
+                  ref.read(authStateProvider.notifier).signOut();
                 },
               ),
-
-              /// Cerrar sesión
-              if (authState.user != null)
-                ListTile(
-                  leading: const Icon(Icons.logout_outlined),
-                  title: Text(
-                    profile.logout,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
-                  ),
-                  onTap: () {
-                    ref.read(authStateProvider.notifier).signOut();
-                  },
-                ),
-            ],
-          ),
+          ]),
         ),
       ],
     );
@@ -257,11 +236,13 @@ class ProfileScreen extends ConsumerWidget {
       final formatter = DateFormat('dd/MM/yyyy HH:mm');
       return '${profile.lastSync}: ${formatter.format(syncState.lastSyncTime!)}';
     }
+
     return syncState.message ?? profile.noSync;
   }
 
   Widget _buildSyncIndicator(WidgetRef ref) {
     final syncState = ref.watch(syncNotifierProvider);
+
     switch (syncState.status) {
       case SyncStatus.syncing:
         return const SizedBox(
@@ -279,7 +260,10 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   void _showLanguageSelector(
-      BuildContext context, WidgetRef ref, String currentLanguage) {
+    BuildContext context,
+    WidgetRef ref,
+    String currentLanguage,
+  ) {
     final profile = context.texts.app.profile;
 
     if (Theme.of(context).platform == TargetPlatform.iOS) {
@@ -347,16 +331,15 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Future<void> _showResetConfirmation(
-      BuildContext context, WidgetRef ref) async {
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text(
           '¿Eliminar todos los datos?',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         content: const Text(
           'Esta acción eliminará todos tus recordatorios y configuraciones. '
@@ -367,23 +350,15 @@ class ProfileScreen extends ConsumerWidget {
             onPressed: () => Navigator.of(context).pop(false),
             child: const Text(
               'Cancelar',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
           FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.of(context).pop(true),
             child: const Text(
               'Eliminar todo',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -474,11 +449,9 @@ class BiometricSettingTile extends ConsumerWidget {
       await ref.read(biometricEnabledProvider.notifier).toggleBiometric(value);
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     }
   }
