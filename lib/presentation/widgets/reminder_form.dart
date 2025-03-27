@@ -5,6 +5,7 @@ import '../../domain/models/reminder.dart';
 
 class ReminderForm extends StatefulWidget {
   final Reminder? initialReminder;
+
   final void Function(
     String title,
     double amount,

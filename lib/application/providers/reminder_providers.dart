@@ -90,9 +90,11 @@ class ReminderController {
   Future<void> updateReminder(Reminder reminder) async {
     try {
       await _repository.updateReminder(reminder);
+
       if (reminder.id != null) {
         await _notificationService.cancelReminderNotifications(reminder.id!);
       }
+
       await _notificationService.scheduleReminderNotification(reminder);
       await _updateHomeWidget();
     } catch (e) {
@@ -105,6 +107,7 @@ class ReminderController {
     try {
       await _repository.deleteReminder(id);
       await _notificationService.cancelReminderNotifications(id);
+
       await _updateHomeWidget();
     } catch (e) {
       debugPrint('Error deleting reminder: $e');

@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,9 +28,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -39,16 +48,6 @@ class DefaultFirebaseOptions {
         );
     }
   }
-
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD2cbyI5VpKVh4MWB778_6Uwe-XhAS5vXo',
-    appId: '1:294378450968:web:0147be21090f100bdb936d',
-    messagingSenderId: '294378450968',
-    projectId: 'neverforgettapp',
-    authDomain: 'neverforgettapp.firebaseapp.com',
-    storageBucket: 'neverforgettapp.firebasestorage.app',
-    measurementId: 'G-7VP3NLE09S',
-  );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDhz-6oyUKoMtQQ8BypD15ADHStOe8KVqA',
@@ -67,24 +66,5 @@ class DefaultFirebaseOptions {
     androidClientId: '294378450968-coia6ou9kiv2o9psth7rcses7bgvhpm7.apps.googleusercontent.com',
     iosClientId: '294378450968-e3a2uts4qc3l8tl4ln4n7pm7812d76pr.apps.googleusercontent.com',
     iosBundleId: 'dev.donmanuel.app.monthlyPayments',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBcYGcsg9EM-g5Ap8bJDZYkVn6yGM4ukII',
-    appId: '1:294378450968:ios:97a47da02b0f14f3db936d',
-    messagingSenderId: '294378450968',
-    projectId: 'neverforgettapp',
-    storageBucket: 'neverforgettapp.firebasestorage.app',
-    iosBundleId: 'dev.donmanuel.app.monthlyPayments',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyD2cbyI5VpKVh4MWB778_6Uwe-XhAS5vXo',
-    appId: '1:294378450968:web:94d2d630b413c299db936d',
-    messagingSenderId: '294378450968',
-    projectId: 'neverforgettapp',
-    authDomain: 'neverforgettapp.firebaseapp.com',
-    storageBucket: 'neverforgettapp.firebasestorage.app',
-    measurementId: 'G-GSWZNG81XQ',
   );
 }

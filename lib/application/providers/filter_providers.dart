@@ -53,10 +53,10 @@ final filteredRemindersProvider = Provider<List<Reminder>>((ref) {
   final filterState = ref.watch(filterStateProvider);
 
   return reminders.where((reminder) {
-    // Apply search filter
     if (filterState.searchQuery != null &&
         filterState.searchQuery!.isNotEmpty) {
       final query = filterState.searchQuery!.toLowerCase();
+
       if (!reminder.title.toLowerCase().contains(query) &&
           !(reminder.description?.toLowerCase().contains(query) ?? false)) {
         return false;
@@ -94,6 +94,7 @@ final filteredRemindersProvider = Provider<List<Reminder>>((ref) {
           comparison = a.title.compareTo(b.title);
           break;
       }
+
       return filterState.sortAscending ? comparison : -comparison;
     });
 });

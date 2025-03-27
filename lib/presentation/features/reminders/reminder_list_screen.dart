@@ -16,87 +16,115 @@ class ReminderListScreen extends ConsumerWidget {
     final filterState = ref.watch(filterStateProvider);
     final texts = context.texts.app.home;
 
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar.medium(
-          pinned: true,
-          title: Text(
-            texts.reminders,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          floating: true,
-          actions: [
-            IconButton(
-              icon: const Icon(
-                CupertinoIcons.add_circled_solid,
-                size: 32,
-              ),
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  showDragHandle: true,
-                  scrollControlDisabledMaxHeightRatio: 0.9,
-                  builder: (context) {
-                    return const CreateReminderScreen();
-                  },
-                );
-              },
-            ),
-          ],
-        ),
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              Padding(
-                padding: EdgeInsets.all(8),
-                child: SearchBar(
-                  elevation: WidgetStateProperty.all(0),
-                  side: WidgetStateProperty.all(
-                    BorderSide(color: Colors.black),
-                  ),
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  hintText: texts.search,
-                  onChanged: (query) {
-                    ref.read(filterStateProvider.notifier).state =
-                        filterState.copyWith(searchQuery: query);
-                  },
-                  trailing: [
-                    IconButton(
-                      icon: const Icon(Icons.filter_list),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          /// Record audio button
+          showCupertinoDialog(
+              context: context,
+              builder: (context) {
+                return CupertinoAlertDialog(
+                  title: const Text("Record audio"),
+                  content: const Text("This feature is not available yet."),
+                  actions: [
+                    CupertinoDialogAction(
+                      child: const Text("OK"),
                       onPressed: () {
-                        showAdaptiveDialog(
-                          context: context,
-                          builder: (context) => FilterDialog(),
-                        );
+                        Navigator.of(context).pop();
                       },
                     ),
                   ],
-                ),
+                );
+              });
+        },
+        label: Text(
+          "Record audio",
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+        icon: const Icon(CupertinoIcons.mic),
+      ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.medium(
+            pinned: true,
+            title: Text(
+              texts.reminders,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
-
-              /// Reminders list
-              ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: filteredReminders.length,
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) {
-                  final reminder = filteredReminders[index];
-
-                  return ReminderSlidable(reminder: reminder);
+            ),
+            floating: true,
+            actions: [
+              IconButton(
+                icon: const Icon(
+                  CupertinoIcons.add_circled_solid,
+                  size: 32,
+                ),
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    showDragHandle: true,
+                    scrollControlDisabledMaxHeightRatio: 0.9,
+                    builder: (context) {
+                      return const CreateReminderScreen();
+                    },
+                  );
                 },
               ),
             ],
           ),
-        ),
-      ],
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: SearchBar(
+                    elevation: WidgetStateProperty.all(0),
+                    side: WidgetStateProperty.all(
+                      BorderSide(color: Colors.black),
+                    ),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    hintText: texts.search,
+                    onChanged: (query) {
+                      ref.read(filterStateProvider.notifier).state =
+                          filterState.copyWith(searchQuery: query);
+                    },
+                    trailing: [
+                      IconButton(
+                        icon: const Icon(Icons.filter_list),
+                        onPressed: () {
+                          showAdaptiveDialog(
+                            context: context,
+                            builder: (context) => FilterDialog(),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+                /// Reminders list
+                ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: filteredReminders.length,
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index) {
+                    final reminder = filteredReminders[index];
+
+                    return ReminderSlidable(reminder: reminder);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

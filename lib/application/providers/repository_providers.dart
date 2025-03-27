@@ -9,6 +9,7 @@ import '../providers/auth_providers.dart';
 
 final driftRepositoryProvider = Provider<ReminderRepository>((ref) {
   final database = ref.watch(databaseProvider);
+
   return DriftReminderRepository(database);
 });
 
@@ -26,6 +27,7 @@ final hybridRepositoryProvider = Provider<ReminderRepository>((ref) {
   final localRepo =
       ref.watch(driftRepositoryProvider) as DriftReminderRepository;
   final remoteRepo = ref.watch(firebaseRepositoryProvider);
+
   return HybridReminderRepository(localRepo, remoteRepo);
 });
 
@@ -34,12 +36,11 @@ final reminderRepositoryProvider = Provider<ReminderRepository>((ref) {
   final driftRepo =
       ref.watch(driftRepositoryProvider) as DriftReminderRepository;
 
-  // If user is authenticated, use hybrid repository
   if (authState.user != null) {
     final firebaseRepo = ref.watch(firebaseRepositoryProvider);
+
     return HybridReminderRepository(driftRepo, firebaseRepo);
   }
 
-  // If user is not authenticated, use only local repository
   return driftRepo;
 });

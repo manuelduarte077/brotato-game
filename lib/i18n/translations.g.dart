@@ -25,20 +25,21 @@ part 'translations_en.g.dart';
 /// This config is needed to recreate the translation model exactly
 /// the same way as this file was created.
 final _buildConfig = BuildModelConfig(
-	fallbackStrategy: FallbackStrategy.none,
-	keyCase: null,
-	keyMapCase: null,
-	paramCase: null,
-	sanitization: SanitizationConfig(enabled: true, prefix: 'k', caseStyle: CaseStyle.camel),
-	stringInterpolation: StringInterpolation.doubleBraces,
-	maps: [],
-	pluralAuto: PluralAuto.cardinal,
-	pluralParameter: 'n',
-	pluralCardinal: [],
-	pluralOrdinal: [],
-	contexts: [],
-	interfaces: [], // currently not supported
-	generateEnum: true,
+  fallbackStrategy: FallbackStrategy.none,
+  keyCase: null,
+  keyMapCase: null,
+  paramCase: null,
+  sanitization: SanitizationConfig(
+      enabled: true, prefix: 'k', caseStyle: CaseStyle.camel),
+  stringInterpolation: StringInterpolation.doubleBraces,
+  maps: [],
+  pluralAuto: PluralAuto.cardinal,
+  pluralParameter: 'n',
+  pluralCardinal: [],
+  pluralOrdinal: [],
+  contexts: [],
+  interfaces: [], // currently not supported
+  generateEnum: true,
 );
 
 /// Supported locales.
@@ -48,66 +49,70 @@ final _buildConfig = BuildModelConfig(
 /// - Locale locale = AppLocale.en.flutterLocale // get flutter locale from enum
 /// - if (LocaleSettings.currentLocale == AppLocale.en) // locale check
 enum AppLocale with BaseAppLocale<AppLocale, Translations> {
-	en(languageCode: 'en'),
-	es(languageCode: 'es');
+  en(languageCode: 'en'),
+  es(languageCode: 'es');
 
-	const AppLocale({
-		required this.languageCode,
-		this.scriptCode, // ignore: unused_element, unused_element_parameter
-		this.countryCode, // ignore: unused_element, unused_element_parameter
-	});
+  const AppLocale({
+    required this.languageCode,
+    this.scriptCode, // ignore: unused_element, unused_element_parameter
+    this.countryCode, // ignore: unused_element, unused_element_parameter
+  });
 
-	@override final String languageCode;
-	@override final String? scriptCode;
-	@override final String? countryCode;
+  @override
+  final String languageCode;
+  @override
+  final String? scriptCode;
+  @override
+  final String? countryCode;
 
-	@override
-	Future<Translations> build({
-		Map<String, Node>? overrides,
-		PluralResolver? cardinalResolver,
-		PluralResolver? ordinalResolver,
-	}) async {
-		switch (this) {
-			case AppLocale.en:
-				return TranslationsEn(
-					overrides: overrides,
-					cardinalResolver: cardinalResolver,
-					ordinalResolver: ordinalResolver,
-				);
-			case AppLocale.es:
-				await l_es.loadLibrary();
-				return l_es.TranslationsEs(
-					overrides: overrides,
-					cardinalResolver: cardinalResolver,
-					ordinalResolver: ordinalResolver,
-				);
-		}
-	}
+  @override
+  Future<Translations> build({
+    Map<String, Node>? overrides,
+    PluralResolver? cardinalResolver,
+    PluralResolver? ordinalResolver,
+  }) async {
+    switch (this) {
+      case AppLocale.en:
+        return TranslationsEn(
+          overrides: overrides,
+          cardinalResolver: cardinalResolver,
+          ordinalResolver: ordinalResolver,
+        );
+      case AppLocale.es:
+        await l_es.loadLibrary();
+        return l_es.TranslationsEs(
+          overrides: overrides,
+          cardinalResolver: cardinalResolver,
+          ordinalResolver: ordinalResolver,
+        );
+    }
+  }
 
-	@override
-	Translations buildSync({
-		Map<String, Node>? overrides,
-		PluralResolver? cardinalResolver,
-		PluralResolver? ordinalResolver,
-	}) {
-		switch (this) {
-			case AppLocale.en:
-				return TranslationsEn(
-					overrides: overrides,
-					cardinalResolver: cardinalResolver,
-					ordinalResolver: ordinalResolver,
-				);
-			case AppLocale.es:
-				return l_es.TranslationsEs(
-					overrides: overrides,
-					cardinalResolver: cardinalResolver,
-					ordinalResolver: ordinalResolver,
-				);
-		}
-	}
+  @override
+  Translations buildSync({
+    Map<String, Node>? overrides,
+    PluralResolver? cardinalResolver,
+    PluralResolver? ordinalResolver,
+  }) {
+    switch (this) {
+      case AppLocale.en:
+        return TranslationsEn(
+          overrides: overrides,
+          cardinalResolver: cardinalResolver,
+          ordinalResolver: ordinalResolver,
+        );
+      case AppLocale.es:
+        return l_es.TranslationsEs(
+          overrides: overrides,
+          cardinalResolver: cardinalResolver,
+          ordinalResolver: ordinalResolver,
+        );
+    }
+  }
 
-	/// Gets current instance managed by [LocaleSettings].
-	Translations get translations => LocaleSettings.instance.getTranslations(this);
+  /// Gets current instance managed by [LocaleSettings].
+  Translations get translations =>
+      LocaleSettings.instance.getTranslations(this);
 }
 
 /// Method A: Simple
@@ -136,10 +141,14 @@ Translations get texts => LocaleSettings.instance.currentTranslations;
 /// final texts = Translations.of(context); // Get texts variable.
 /// String a = texts.someKey.anotherKey; // Use texts variable.
 /// String b = texts['someKey.anotherKey']; // Only for edge cases!
-class TranslationProvider extends BaseTranslationProvider<AppLocale, Translations> {
-	TranslationProvider({required super.child}) : super(settings: LocaleSettings.instance);
+class TranslationProvider
+    extends BaseTranslationProvider<AppLocale, Translations> {
+  TranslationProvider({required super.child})
+      : super(settings: LocaleSettings.instance);
 
-	static InheritedLocaleData<AppLocale, Translations> of(BuildContext context) => InheritedLocaleData.of<AppLocale, Translations>(context);
+  static InheritedLocaleData<AppLocale, Translations> of(
+          BuildContext context) =>
+      InheritedLocaleData.of<AppLocale, Translations>(context);
 }
 
 /// Method B shorthand via [BuildContext] extension method.
@@ -148,65 +157,160 @@ class TranslationProvider extends BaseTranslationProvider<AppLocale, Translation
 /// Usage (e.g. in a widget's build method):
 /// context.texts.someKey.anotherKey
 extension BuildContextTranslationsExtension on BuildContext {
-	Translations get texts => TranslationProvider.of(this).translations;
+  Translations get texts => TranslationProvider.of(this).translations;
 }
 
 /// Manages all translation instances and the current locale
-class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, Translations> {
-	LocaleSettings._() : super(
-		utils: AppLocaleUtils.instance,
-		lazy: true,
-	);
+class LocaleSettings
+    extends BaseFlutterLocaleSettings<AppLocale, Translations> {
+  LocaleSettings._()
+      : super(
+          utils: AppLocaleUtils.instance,
+          lazy: true,
+        );
 
-	static final instance = LocaleSettings._();
+  static final instance = LocaleSettings._();
 
-	// static aliases (checkout base methods for documentation)
-	static AppLocale get currentLocale => instance.currentLocale;
-	static Stream<AppLocale> getLocaleStream() => instance.getLocaleStream();
-	static Future<AppLocale> setLocale(AppLocale locale, {bool? listenToDeviceLocale = false}) => instance.setLocale(locale, listenToDeviceLocale: listenToDeviceLocale);
-	static Future<AppLocale> setLocaleRaw(String rawLocale, {bool? listenToDeviceLocale = false}) => instance.setLocaleRaw(rawLocale, listenToDeviceLocale: listenToDeviceLocale);
-	static Future<AppLocale> useDeviceLocale() => instance.useDeviceLocale();
-	static Future<void> setPluralResolver({String? language, AppLocale? locale, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver}) => instance.setPluralResolver(
-		language: language,
-		locale: locale,
-		cardinalResolver: cardinalResolver,
-		ordinalResolver: ordinalResolver,
-	);
-	static Future<void> overrideTranslations({required AppLocale locale, required FileType fileType, required String content}) => instance.overrideTranslations(locale: locale, fileType: fileType, content: content);
-	static Future<void> overrideTranslationsFromMap({required AppLocale locale, required bool isFlatMap, required Map map}) => instance.overrideTranslationsFromMap(locale: locale, isFlatMap: isFlatMap, map: map);
+  // static aliases (checkout base methods for documentation)
+  static AppLocale get currentLocale => instance.currentLocale;
+  static Stream<AppLocale> getLocaleStream() => instance.getLocaleStream();
+  static Future<AppLocale> setLocale(AppLocale locale,
+          {bool? listenToDeviceLocale = false}) =>
+      instance.setLocale(locale, listenToDeviceLocale: listenToDeviceLocale);
+  static Future<AppLocale> setLocaleRaw(String rawLocale,
+          {bool? listenToDeviceLocale = false}) =>
+      instance.setLocaleRaw(rawLocale,
+          listenToDeviceLocale: listenToDeviceLocale);
+  static Future<AppLocale> useDeviceLocale() => instance.useDeviceLocale();
+  static Future<void> setPluralResolver(
+          {String? language,
+          AppLocale? locale,
+          PluralResolver? cardinalResolver,
+          PluralResolver? ordinalResolver}) =>
+      instance.setPluralResolver(
+        language: language,
+        locale: locale,
+        cardinalResolver: cardinalResolver,
+        ordinalResolver: ordinalResolver,
+      );
+  static Future<void> overrideTranslations(
+          {required AppLocale locale,
+          required FileType fileType,
+          required String content}) =>
+      instance.overrideTranslations(
+          locale: locale, fileType: fileType, content: content);
+  static Future<void> overrideTranslationsFromMap(
+          {required AppLocale locale,
+          required bool isFlatMap,
+          required Map map}) =>
+      instance.overrideTranslationsFromMap(
+          locale: locale, isFlatMap: isFlatMap, map: map);
 
-	// synchronous versions
-	static AppLocale setLocaleSync(AppLocale locale, {bool? listenToDeviceLocale = false}) => instance.setLocaleSync(locale, listenToDeviceLocale: listenToDeviceLocale);
-	static AppLocale setLocaleRawSync(String rawLocale, {bool? listenToDeviceLocale = false}) => instance.setLocaleRawSync(rawLocale, listenToDeviceLocale: listenToDeviceLocale);
-	static AppLocale useDeviceLocaleSync() => instance.useDeviceLocaleSync();
-	static void setPluralResolverSync({String? language, AppLocale? locale, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver}) => instance.setPluralResolverSync(
-		language: language,
-		locale: locale,
-		cardinalResolver: cardinalResolver,
-		ordinalResolver: ordinalResolver,
-	);
-	static void overrideTranslationsSync({required AppLocale locale, required FileType fileType, required String content}) => instance.overrideTranslationsSync(locale: locale, fileType: fileType, content: content);
-	static void overrideTranslationsFromMapSync({required AppLocale locale, required bool isFlatMap, required Map map}) => instance.overrideTranslationsFromMapSync(locale: locale, isFlatMap: isFlatMap, map: map);
+  // synchronous versions
+  static AppLocale setLocaleSync(AppLocale locale,
+          {bool? listenToDeviceLocale = false}) =>
+      instance.setLocaleSync(locale,
+          listenToDeviceLocale: listenToDeviceLocale);
+  static AppLocale setLocaleRawSync(String rawLocale,
+          {bool? listenToDeviceLocale = false}) =>
+      instance.setLocaleRawSync(rawLocale,
+          listenToDeviceLocale: listenToDeviceLocale);
+  static AppLocale useDeviceLocaleSync() => instance.useDeviceLocaleSync();
+  static void setPluralResolverSync(
+          {String? language,
+          AppLocale? locale,
+          PluralResolver? cardinalResolver,
+          PluralResolver? ordinalResolver}) =>
+      instance.setPluralResolverSync(
+        language: language,
+        locale: locale,
+        cardinalResolver: cardinalResolver,
+        ordinalResolver: ordinalResolver,
+      );
+  static void overrideTranslationsSync(
+          {required AppLocale locale,
+          required FileType fileType,
+          required String content}) =>
+      instance.overrideTranslationsSync(
+          locale: locale, fileType: fileType, content: content);
+  static void overrideTranslationsFromMapSync(
+          {required AppLocale locale,
+          required bool isFlatMap,
+          required Map map}) =>
+      instance.overrideTranslationsFromMapSync(
+          locale: locale, isFlatMap: isFlatMap, map: map);
 }
 
 /// Provides utility functions without any side effects.
 class AppLocaleUtils extends BaseAppLocaleUtils<AppLocale, Translations> {
-	AppLocaleUtils._() : super(
-		baseLocale: AppLocale.en,
-		locales: AppLocale.values,
-		buildConfig: _buildConfig,
-	);
+  AppLocaleUtils._()
+      : super(
+          baseLocale: AppLocale.en,
+          locales: AppLocale.values,
+          buildConfig: _buildConfig,
+        );
 
-	static final instance = AppLocaleUtils._();
+  static final instance = AppLocaleUtils._();
 
-	// static aliases (checkout base methods for documentation)
-	static AppLocale parse(String rawLocale) => instance.parse(rawLocale);
-	static AppLocale parseLocaleParts({required String languageCode, String? scriptCode, String? countryCode}) => instance.parseLocaleParts(languageCode: languageCode, scriptCode: scriptCode, countryCode: countryCode);
-	static AppLocale findDeviceLocale() => instance.findDeviceLocale();
-	static List<Locale> get supportedLocales => instance.supportedLocales;
-	static List<String> get supportedLocalesRaw => instance.supportedLocalesRaw;
-	static Future<Translations> buildWithOverrides({required AppLocale locale, required FileType fileType, required String content, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver}) => instance.buildWithOverrides(locale: locale, fileType: fileType, content: content, cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
-	static Future<Translations> buildWithOverridesFromMap({required AppLocale locale, required bool isFlatMap, required Map map, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver}) => instance.buildWithOverridesFromMap(locale: locale, isFlatMap: isFlatMap, map: map, cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
-	static Translations buildWithOverridesSync({required AppLocale locale, required FileType fileType, required String content, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver}) => instance.buildWithOverridesSync(locale: locale, fileType: fileType, content: content, cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
-	static Translations buildWithOverridesFromMapSync({required AppLocale locale, required bool isFlatMap, required Map map, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver}) => instance.buildWithOverridesFromMapSync(locale: locale, isFlatMap: isFlatMap, map: map, cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
+  // static aliases (checkout base methods for documentation)
+  static AppLocale parse(String rawLocale) => instance.parse(rawLocale);
+  static AppLocale parseLocaleParts(
+          {required String languageCode,
+          String? scriptCode,
+          String? countryCode}) =>
+      instance.parseLocaleParts(
+          languageCode: languageCode,
+          scriptCode: scriptCode,
+          countryCode: countryCode);
+  static AppLocale findDeviceLocale() => instance.findDeviceLocale();
+  static List<Locale> get supportedLocales => instance.supportedLocales;
+  static List<String> get supportedLocalesRaw => instance.supportedLocalesRaw;
+  static Future<Translations> buildWithOverrides(
+          {required AppLocale locale,
+          required FileType fileType,
+          required String content,
+          PluralResolver? cardinalResolver,
+          PluralResolver? ordinalResolver}) =>
+      instance.buildWithOverrides(
+          locale: locale,
+          fileType: fileType,
+          content: content,
+          cardinalResolver: cardinalResolver,
+          ordinalResolver: ordinalResolver);
+  static Future<Translations> buildWithOverridesFromMap(
+          {required AppLocale locale,
+          required bool isFlatMap,
+          required Map map,
+          PluralResolver? cardinalResolver,
+          PluralResolver? ordinalResolver}) =>
+      instance.buildWithOverridesFromMap(
+          locale: locale,
+          isFlatMap: isFlatMap,
+          map: map,
+          cardinalResolver: cardinalResolver,
+          ordinalResolver: ordinalResolver);
+  static Translations buildWithOverridesSync(
+          {required AppLocale locale,
+          required FileType fileType,
+          required String content,
+          PluralResolver? cardinalResolver,
+          PluralResolver? ordinalResolver}) =>
+      instance.buildWithOverridesSync(
+          locale: locale,
+          fileType: fileType,
+          content: content,
+          cardinalResolver: cardinalResolver,
+          ordinalResolver: ordinalResolver);
+  static Translations buildWithOverridesFromMapSync(
+          {required AppLocale locale,
+          required bool isFlatMap,
+          required Map map,
+          PluralResolver? cardinalResolver,
+          PluralResolver? ordinalResolver}) =>
+      instance.buildWithOverridesFromMapSync(
+          locale: locale,
+          isFlatMap: isFlatMap,
+          map: map,
+          cardinalResolver: cardinalResolver,
+          ordinalResolver: ordinalResolver);
 }
