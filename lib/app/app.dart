@@ -6,8 +6,8 @@ import 'package:pay_reminder/i18n/translations.g.dart';
 import '../application/providers/theme_provider.dart';
 import '../presentation/routes/app_routes.dart';
 
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+class NeverForgett extends ConsumerWidget {
+  const NeverForgett({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

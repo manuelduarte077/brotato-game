@@ -59,6 +59,27 @@ class _ReminderFormState extends State<ReminderForm> {
     'Otros',
   ];
 
+  final Map<String, IconData> _categoryIcons = {
+    'Alimentos y Supermercado': Icons.shopping_cart,
+    'Transporte y Gasolina': Icons.directions_car,
+    'Servicios Básicos': Icons.power,
+    'Renta/Hipoteca': Icons.home,
+    'Salud y Medicamentos': Icons.medical_services,
+    'Educación': Icons.school,
+    'Entretenimiento': Icons.movie,
+    'Seguros': Icons.security,
+    'Préstamos y Deudas': Icons.account_balance,
+    'Ahorro e Inversiones': Icons.savings,
+    'Ropa y Calzado': Icons.checkroom,
+    'Telecomunicaciones': Icons.phone_android,
+    'Mascotas': Icons.pets,
+    'Mantenimiento del Hogar': Icons.handyman,
+    'Impuestos': Icons.receipt_long,
+    'Suscripciones': Icons.subscriptions,
+    'Regalos': Icons.card_giftcard,
+    'Otros': Icons.more_horiz,
+  };
+
   final List<String> _recurrenceTypes = [
     'Daily',
     'Weekly',
@@ -182,12 +203,16 @@ class _ReminderFormState extends State<ReminderForm> {
                   controller: scrollController,
                   itemCount: filteredCategories.length,
                   itemBuilder: (context, index) {
+                    final category = filteredCategories[index];
                     return ListTile(
-                      title: Text(filteredCategories[index]),
-                      selected: _selectedCategory == filteredCategories[index],
+                      leading: Icon(
+                        _categoryIcons[category],
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      title: Text(category),
+                      selected: _selectedCategory == category,
                       onTap: () {
-                        setState(() =>
-                            _selectedCategory = filteredCategories[index]);
+                        setState(() => _selectedCategory = category);
                         Navigator.pop(context);
                         this.setState(() {});
                       },
@@ -352,6 +377,7 @@ class _ReminderFormState extends State<ReminderForm> {
               labelText: texts.category,
               border: const OutlineInputBorder(),
               suffixIcon: const Icon(Icons.arrow_drop_down),
+              prefixIcon: Icon(_categoryIcons[_selectedCategory]),
             ),
             controller: TextEditingController(text: _selectedCategory),
             onTap: _showCategoryBottomSheet,

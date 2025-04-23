@@ -17,32 +17,6 @@ class ReminderListScreen extends ConsumerWidget {
     final texts = context.texts.app.home;
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          /// Record audio button
-          showCupertinoDialog(
-              context: context,
-              builder: (context) {
-                return CupertinoAlertDialog(
-                  title: const Text("Record audio"),
-                  content: const Text("This feature is not available yet."),
-                  actions: [
-                    CupertinoDialogAction(
-                      child: const Text("OK"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
-                );
-              });
-        },
-        label: Text(
-          "Record audio",
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
-        icon: const Icon(CupertinoIcons.mic),
-      ),
       body: CustomScrollView(
         slivers: [
           SliverAppBar.medium(

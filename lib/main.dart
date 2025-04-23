@@ -22,7 +22,7 @@ void main() async {
   runApp(
     ProviderScope(
       child: TranslationProvider(
-        child: MyApp(),
+        child: NeverForgett(),
       ),
     ),
   );
