@@ -17,6 +17,9 @@ extension Color {
     static let appSecondary = Color.purple
     static let appAccent = Color.blue
     
+    // Main Colors
+    static let mainColor = Color("mainColor")
+    
     // Category colors
     static let entertainment = Color("colorEntertainment")
     static let fitness = Color("colorFitness")

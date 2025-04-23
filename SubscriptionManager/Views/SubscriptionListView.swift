@@ -70,7 +70,7 @@ struct SubscriptionListView: View {
                             .fontWeight(.semibold)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
-                            .background(Color.indigo)
+                            .background(Color.mainColor)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }

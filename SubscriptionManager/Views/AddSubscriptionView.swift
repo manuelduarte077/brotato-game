@@ -65,7 +65,7 @@ struct AddSubscriptionView: View {
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                 }
-                .listRowBackground(Color.indigo)
+                .listRowBackground(Color.mainColor)
                 .disabled(name.isEmpty || price.isEmpty)
             }
         }

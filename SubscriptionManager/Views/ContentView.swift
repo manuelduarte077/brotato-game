@@ -8,7 +8,7 @@ struct ContentView: View {
         TabView(selection: $selectedTab) {
             NavigationView {
                 SubscriptionListView()
-                    .navigationTitle("Subscriptions")
+                    .navigationTitle("Never Forgett")
             }
             .tabItem {
                 Label("Subscriptions", systemImage: "list.bullet")
@@ -33,7 +33,7 @@ struct ContentView: View {
             }
             .tag(2)
         }
-        .accentColor(.indigo)
+        .accentColor(.mainColor)
     }
 }
 
