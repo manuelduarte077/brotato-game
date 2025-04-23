@@ -1,9 +1,0 @@
-# Identificador de la aplicación
-appId: dev.donmanuel.app.monthlyPayments
----
-# Secuencia de acciones de prueba
-- launchApp  # Inicia la aplicación
-
-- tapOn: "Create Reminder"
-- inputText: "Test Reminder"
-- tapOn: "Save"
