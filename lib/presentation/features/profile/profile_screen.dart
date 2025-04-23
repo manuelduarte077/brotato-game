@@ -5,10 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pay_reminder/i18n/translations.g.dart';
 
-import '../../../application/providers/auth_providers.dart';
-import '../../../application/providers/sync_provider.dart';
 import '../../../application/providers/language_provider.dart';
-import 'package:intl/intl.dart';
 
 import '../notifications/notifications_screen.dart';
 import 'report_screen.dart';
@@ -25,8 +22,6 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authStateProvider);
-
     // final isDarkModeAsync = ref.watch(themeProvider); // disabled for now
     final currentLanguage = ref.watch(languageProvider);
     final profile = context.texts.app.profile;
@@ -89,47 +84,6 @@ class ProfileScreen extends ConsumerWidget {
         SliverList(
           delegate: SliverChildListDelegate([
             SizedBox(height: 10),
-            // if (authState.isLoading)
-            //   const Center(child: CircularProgressIndicator.adaptive()),
-            // if (authState.error != null)
-            //   Text(authState.error!, style: const TextStyle(color: Colors.red)),
-            // if (!authState.isLoading)
-            //   authState.user == null
-            //       ? Padding(
-            //           padding: const EdgeInsets.symmetric(
-            //             horizontal: 16,
-            //             vertical: 8,
-            //           ),
-            //           child: FilledButton(
-            //             onPressed: () {
-            //               ref
-            //                   .read(authStateProvider.notifier)
-            //                   .signInWithGoogle();
-            //             },
-            //             child: Row(
-            //               mainAxisSize: MainAxisSize.min,
-            //               children: [
-            //                 Icon(Icons.login),
-            //                 SizedBox(width: 8),
-            //                 Text(profile.signInWithGoogle),
-            //               ],
-            //             ),
-            //           ),
-            //         )
-            //       : Column(
-            //           children: [
-            //             ListTile(
-            //               leading: CircleAvatar(
-            //                 backgroundImage: NetworkImage(
-            //                   authState.user?.photoURL ??
-            //                       'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-            //                 ),
-            //               ),
-            //               title: Text(authState.user?.displayName ?? ''),
-            //               subtitle: Text(authState.user?.email ?? ''),
-            //             ),
-            //           ],
-            //         ),
 
             /// Theme Toggle (disabled for now)
             // ListTile(
@@ -171,18 +125,6 @@ class ProfileScreen extends ConsumerWidget {
               },
             ),
 
-            /// Sync
-            if (authState.user != null)
-              ListTile(
-                leading: const Icon(Icons.sync_outlined),
-                title: Text(profile.sync, style: TextStyle(fontSize: 16)),
-                subtitle: Text(_getSyncStatusText(ref, context)),
-                trailing: _buildSyncIndicator(ref),
-                onTap: () {
-                  ref.read(syncNotifierProvider.notifier).syncFromRemote();
-                },
-              ),
-
             // Notifications Settings
             ListTile(
               leading: const Icon(Icons.notifications_outlined),
@@ -199,23 +141,6 @@ class ProfileScreen extends ConsumerWidget {
                 );
               },
             ),
-
-            /// Cerrar sesión
-            if (authState.user != null)
-              ListTile(
-                leading: const Icon(Icons.logout_outlined),
-                title: Text(
-                  profile.logout,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                  ),
-                ),
-                onTap: () {
-                  ref.read(authStateProvider.notifier).signOut();
-                },
-              ),
           ]),
         ),
       ],
@@ -225,37 +150,6 @@ class ProfileScreen extends ConsumerWidget {
   Future<void> _launchUrl() async {
     if (!await launchUrl(_url)) {
       throw Exception('Could not launch $_url');
-    }
-  }
-
-  String _getSyncStatusText(WidgetRef ref, context) {
-    final syncState = ref.watch(syncNotifierProvider);
-    final profile = context.texts.profile;
-
-    if (syncState.lastSyncTime != null) {
-      final formatter = DateFormat('dd/MM/yyyy HH:mm');
-      return '${profile.lastSync}: ${formatter.format(syncState.lastSyncTime!)}';
-    }
-
-    return syncState.message ?? profile.noSync;
-  }
-
-  Widget _buildSyncIndicator(WidgetRef ref) {
-    final syncState = ref.watch(syncNotifierProvider);
-
-    switch (syncState.status) {
-      case SyncStatus.syncing:
-        return const SizedBox(
-          width: 20,
-          height: 20,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        );
-      case SyncStatus.success:
-        return const Icon(Icons.check_circle, color: Colors.green);
-      case SyncStatus.error:
-        return const Icon(Icons.error, color: Colors.red);
-      default:
-        return const Icon(Icons.sync);
     }
   }
 

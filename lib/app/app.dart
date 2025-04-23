@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pay_reminder/i18n/translations.g.dart';
 
-import '../application/providers/auth_providers.dart';
 import '../application/providers/theme_provider.dart';
 import '../presentation/routes/app_routes.dart';
 
@@ -12,8 +11,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(authInitializationProvider);
-
     final isDarkMode = ref.watch(themeProvider.select(
       (future) => future.when(
         data: (value) => value,

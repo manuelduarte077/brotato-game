@@ -1,33 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../infrastructure/services/home_widget_service.dart';
-import 'firebase_providers.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../domain/repositories/reminder_repository.dart';
 import '../../infrastructure/repositories/drift_reminder_repository.dart';
-import '../../infrastructure/repositories/firebase_reminder_repository.dart';
 import '../../infrastructure/repositories/hybrid_reminder_repository.dart';
 import '../database_provider.dart';
-import '../providers/auth_providers.dart';
 import '../../domain/models/reminder.dart';
 import '../../infrastructure/services/notification_service.dart';
 import 'home_widget_provider.dart';
 
 final reminderRepositoryProvider = Provider<ReminderRepository>((ref) {
-  final authState = ref.watch(authStateProvider);
   final database = ref.watch(databaseProvider);
   final driftRepo = DriftReminderRepository(database);
 
-  if (authState.user != null) {
-    final firebaseRepo = FirebaseReminderRepository(
-      firestore: ref.watch(firebaseFirestoreProvider),
-      userId: authState.user?.uid,
-    );
-
-    return HybridReminderRepository(driftRepo, firebaseRepo);
-  }
-
-  return driftRepo;
+  return HybridReminderRepository(driftRepo);
 });
 
 final remindersStreamProvider = StreamProvider<List<Reminder>>((ref) {
