@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pay_reminder/application/providers/reminder_providers.dart';
-import 'package:pay_reminder/domain/models/reminder.dart';
+import 'package:never_forgett/application/providers/reminder_providers.dart';
+import 'package:never_forgett/domain/models/reminder.dart';
 
 enum ReminderSortType {
   dueDate,

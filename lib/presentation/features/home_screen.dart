@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pay_reminder/i18n/translations.g.dart';
+import 'package:never_forgett/i18n/translations.g.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'calendar/calendar_screen.dart';
