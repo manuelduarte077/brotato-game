@@ -4,4 +4,5 @@ androidArgs:
 
 iosArgs:
   permissions:
-    - notifications 
+    - notifications
+    - alert
