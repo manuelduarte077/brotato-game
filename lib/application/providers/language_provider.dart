@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pay_reminder/i18n/translations.g.dart';
+import 'package:never_forgett/i18n/translations.g.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final languageProvider = StateNotifierProvider<LanguageNotifier, String>((ref) {

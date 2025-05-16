@@ -1,10 +1,11 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:timezone/timezone.dart' as tz;
-import '../../application/providers/notification_providers.dart';
-import '../../domain/models/reminder.dart';
 import 'package:riverpod/riverpod.dart';
 import 'dart:convert';
+
+import '../../application/providers/notification_providers.dart';
+import '../../domain/models/reminder.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._();
@@ -129,8 +130,6 @@ class NotificationService {
         tz.TZDateTime.from(scheduledDate, tz.local),
         notificationDetails,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
         payload: payload,
       );
 

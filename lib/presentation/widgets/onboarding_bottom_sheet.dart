@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pay_reminder/i18n/translations.g.dart';
+import 'package:never_forgett/i18n/translations.g.dart';
 import '../../application/providers/onboarding_provider.dart';
 
 class OnboardingBottomSheet extends ConsumerWidget {

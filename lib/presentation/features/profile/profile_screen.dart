@@ -3,15 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pay_reminder/i18n/translations.g.dart';
+import 'package:never_forgett/i18n/translations.g.dart';
+
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../application/providers/language_provider.dart';
-
+import '../../../application/providers/local_auth_provider.dart';
+import '../../../application/providers/reset_provider.dart';
 import '../notifications/notifications_screen.dart';
 import 'report_screen.dart';
-import '../../../application/providers/local_auth_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-import '../../../application/providers/reset_provider.dart';
 
 final Uri _url = Uri.parse(
   'https://privacy.donmanuel.dev/never_forgett/index.html',

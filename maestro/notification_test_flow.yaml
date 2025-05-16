@@ -1,5 +1,5 @@
 # Identificador de la aplicación
-appId: dev.donmanuel.pay_reminder
+appId: dev.donmanuel.never_forgett
 ---
 # Secuencia de acciones de prueba
 - launchApp  # Inicia la aplicación

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pay_reminder/i18n/translations.g.dart';
+import 'package:never_forgett/i18n/translations.g.dart';
 import '../../domain/models/reminder.dart';
 
 class ShowReminderForm extends StatelessWidget {

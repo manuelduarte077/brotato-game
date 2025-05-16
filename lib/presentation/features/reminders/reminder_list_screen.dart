@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pay_reminder/i18n/translations.g.dart';
+
 import '../../../application/providers/filter_providers.dart';
+import '../../../i18n/translations.g.dart';
 import '../../widgets/filter_dialog.dart';
-import 'create_reminder_screen.dart';
 import '../../widgets/reminder_slidable.dart';
+import 'create_reminder_screen.dart';
 
 class ReminderListScreen extends ConsumerWidget {
   const ReminderListScreen({super.key});

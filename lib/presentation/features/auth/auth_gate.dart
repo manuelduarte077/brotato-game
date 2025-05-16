@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../infrastructure/services/local_auth_service.dart';
 import 'dart:io' show Platform;
+
+import '../../../infrastructure/services/local_auth_service.dart';
 
 class AuthGate extends ConsumerStatefulWidget {
   final Widget child;

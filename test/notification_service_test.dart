@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pay_reminder/infrastructure/services/notification_service.dart';
-import 'package:pay_reminder/domain/models/reminder.dart';
+import 'package:never_forgett/infrastructure/services/notification_service.dart';
+import 'package:never_forgett/domain/models/reminder.dart';
 
 void main() {
   late NotificationService notificationService;

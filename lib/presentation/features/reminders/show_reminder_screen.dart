@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pay_reminder/presentation/widgets/show_reminder_form.dart';
+
 import '../../../domain/models/reminder.dart';
+import '../../widgets/show_reminder_form.dart';
 
 class ShowReminderScreen extends ConsumerWidget {
   final Reminder reminder;

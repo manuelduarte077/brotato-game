@@ -1,4 +1,4 @@
-name: pay_reminder
+name: never_forgett
 description: "Never Forgett - Payment Reminder App"
 
 publish_to: "none"
@@ -9,18 +9,15 @@ environment:
   sdk: ^3.6.2
 
 dependencies:
-  cloud_firestore: ^5.6.5
   cupertino_icons: ^1.0.8
   drift: ^2.25.1
   drift_flutter: ^0.2.4
   firebase_analytics: ^11.4.4
-  firebase_auth: ^5.5.1
-  firebase_core: ^3.12.1
   firebase_crashlytics: ^4.3.4
-  fl_chart: ^0.70.1
+  fl_chart: ^1.0.0
   flutter:
     sdk: flutter
-  flutter_local_notifications: ^18.0.1
+  flutter_local_notifications: ^19.2.0
   flutter_riverpod: ^2.6.1
   flutter_slidable: ^4.0.0
   google_fonts: ^6.2.1
