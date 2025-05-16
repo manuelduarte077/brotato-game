@@ -1,7 +1,6 @@
 # Identificador de la aplicación
 appId: dev.donmanuel.never_forgett
 ---
-# Secuencia de acciones de prueba
 - launchApp  # Inicia la aplicación
 
 # Navegación a la sección de notificaciones
