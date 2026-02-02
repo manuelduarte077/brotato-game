@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://xgep30mgy4iv"]
+
+[ext_resource type="PackedScene" uid="uid://ylarq2r0auqf" path="res://scenes/units/players/player_well_rounded.tscn" id="1_65kgl"]
+[ext_resource type="Resource" uid="uid://baviw1s88sans" path="res://resources/units/players/player_brawler.tres" id="2_ktf2f"]
+[ext_resource type="Texture2D" uid="uid://dq63ocnu3lset" path="res://assets/sprites/Players/Player_3}.png" id="3_3kb02"]
+
+[node name="PlayerCrazy" instance=ExtResource("1_65kgl")]
+dash_duration = 0.8
+dash_speed_multi = 3.0
+dash_cooldown = 1.8
+stats = ExtResource("2_ktf2f")
+
+[node name="Trail" parent="Visuals" index="0"]
+default_color = Color(0.088034, 0.344952, 0.289192, 1)
+
+[node name="Sprite" parent="Visuals" index="2"]
+texture = ExtResource("3_3kb02")

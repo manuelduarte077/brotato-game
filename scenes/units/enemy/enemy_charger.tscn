@@ -1,0 +1,66 @@
+[gd_scene load_steps=8 format=3 uid="uid://b25u6mj47khs1"]
+
+[ext_resource type="PackedScene" uid="uid://bvdbk215gaywh" path="res://scenes/units/enemy/enemy_chaser.tscn" id="1_woq8q"]
+[ext_resource type="Texture2D" uid="uid://emsi6ifyt0vf" path="res://assets/sprites/Enemies/Enemy_5.png" id="2_a2ev1"]
+[ext_resource type="Resource" uid="uid://dhchq7b41ysc6" path="res://resources/units/enemy/stats_enemy_charger.tres" id="2_moafo"]
+[ext_resource type="Script" uid="uid://cpvvnpad836x0" path="res://scenes/units/enemy/charge_attack_behavior.gd" id="4_moafo"]
+
+[sub_resource type="Animation" id="Animation_a2ev1"]
+resource_name = "charge"
+length = 0.7
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals/Sprite:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0.8522, 0.0289434, 0.390809, 1), Color(1, 1, 1, 1), Color(0.85098, 0.027451, 0.392157, 1), Color(1, 1, 1, 1), Color(0.85098, 0.027451, 0.392157, 1), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_moafo"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals/Sprite:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hors1"]
+_data = {
+&"RESET": SubResource("Animation_moafo"),
+&"charge": SubResource("Animation_a2ev1")
+}
+
+[node name="EnemyCharger" instance=ExtResource("1_woq8q")]
+stats = ExtResource("2_moafo")
+
+[node name="Sprite" parent="Visuals" index="1"]
+texture = ExtResource("2_a2ev1")
+
+[node name="HurtboxComponent" parent="." index="4"]
+visible = false
+
+[node name="HitboxComponent" parent="." index="5"]
+visible = false
+
+[node name="AnimationEffects" type="AnimationPlayer" parent="." index="10"]
+libraries = {
+&"": SubResource("AnimationLibrary_hors1")
+}
+
+[node name="ChargeAttackBehavior" type="Node2D" parent="." index="11" node_paths=PackedStringArray("enemy", "anim_player")]
+script = ExtResource("4_moafo")
+enemy = NodePath("..")
+anim_player = NodePath("../AnimationEffects")

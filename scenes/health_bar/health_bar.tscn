@@ -1,0 +1,70 @@
+[gd_scene load_steps=4 format=3 uid="uid://dw21uug7ogw8g"]
+
+[ext_resource type="Script" uid="uid://bua5552qjdxkk" path="res://scenes/health_bar/health_bar.gd" id="1_qy603"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qy603"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(0.137255, 0.0196078, 0.027451, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8gela"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+bg_color = Color(1, 0.290196, 0.454902, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.137255, 0.0196078, 0.027451, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+corner_detail = 6
+
+[node name="HealthBar" type="Control"]
+custom_minimum_size = Vector2(96, 20)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 96.0
+offset_bottom = 20.0
+script = ExtResource("1_qy603")
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_qy603")
+theme_override_styles/fill = SubResource("StyleBoxFlat_8gela")
+max_value = 1.0
+value = 0.5
+show_percentage = false
+
+[node name="HealthValue" type="Label" parent="ProgressBar"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -8.5
+offset_top = -9.0
+offset_right = 8.5
+offset_bottom = 10.3333
+grow_horizontal = 2
+grow_vertical = 2
+text = "10"
+horizontal_alignment = 1

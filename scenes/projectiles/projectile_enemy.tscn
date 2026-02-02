@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://n70fewi4jxg8"]
+
+[ext_resource type="PackedScene" uid="uid://drkyu54or4era" path="res://scenes/projectiles/projectile_pistol.tscn" id="1_5d7ua"]
+[ext_resource type="Texture2D" uid="uid://dkji1b4um54aj" path="res://assets/sprites/Projectiles/Projectile_enemy.png" id="2_20smo"]
+
+[node name="ProjectileEnemy" instance=ExtResource("1_5d7ua")]
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_20smo")
+
+[node name="HitboxComponent" parent="." index="1"]
+collision_layer = 4
+collision_mask = 32

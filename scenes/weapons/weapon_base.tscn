@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://l0ajj5teqb1l"]
+
+[ext_resource type="Script" uid="uid://bvguywmjhdl4k" path="res://scenes/weapons/weapon.gd" id="1_v4xn6"]
+[ext_resource type="Shader" uid="uid://d0sq17nsl5pjv" path="res://shaders/outline.gdshader" id="2_uvw4m"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_omet7"]
+resource_local_to_scene = true
+shader = ExtResource("2_uvw4m")
+shader_parameter/outline_color = Color(1, 1, 1, 1)
+shader_parameter/outline_width = 7.0
+shader_parameter/glow_intensity = 3.5
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v4xn6"]
+radius = 120.0
+
+[node name="WeaponBase" type="Node2D"]
+script = ExtResource("1_v4xn6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 2
+material = SubResource("ShaderMaterial_omet7")
+
+[node name="RangeArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RangeArea"]
+unique_name_in_owner = true
+shape = SubResource("CircleShape2D_v4xn6")
+debug_color = Color(1, 1, 1, 0.196078)
+
+[node name="CooldownTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="WeaponBehavior" type="Node2D" parent="."]
+
+[connection signal="area_entered" from="RangeArea" to="." method="_on_range_area_area_entered"]
+[connection signal="area_exited" from="RangeArea" to="." method="_on_range_area_area_exited"]

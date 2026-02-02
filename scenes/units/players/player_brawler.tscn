@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://d3yi6tnvpsxfo"]
+
+[ext_resource type="PackedScene" uid="uid://ylarq2r0auqf" path="res://scenes/units/players/player_well_rounded.tscn" id="1_qla7x"]
+[ext_resource type="Resource" uid="uid://c5s48bjxkejyh" path="res://resources/units/players/player_bunny.tres" id="2_m4j1l"]
+[ext_resource type="Texture2D" uid="uid://dpxw8tsbgrfse" path="res://assets/sprites/Players/Player_2.png" id="3_gs2py"]
+
+[node name="PlayerBrawler" instance=ExtResource("1_qla7x")]
+dash_duration = 0.8
+dash_speed_multi = 2.75
+dash_cooldown = 1.6
+stats = ExtResource("2_m4j1l")
+
+[node name="Trail" parent="Visuals" index="0"]
+default_color = Color(0.53317, 0.37901, 0, 1)
+
+[node name="Sprite" parent="Visuals" index="2"]
+texture = ExtResource("3_gs2py")
