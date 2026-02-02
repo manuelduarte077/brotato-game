@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ItemWeapon" load_steps=5 format=3 uid="uid://bot7h6j3afpiv"]
+
+[ext_resource type="Texture2D" uid="uid://5qsdr8kgiqe3" path="res://assets/sprites/Weapons/Icons/weapon_smg_icon.png" id="1_l5rpr"]
+[ext_resource type="PackedScene" uid="uid://dehp0ctnnle3a" path="res://scenes/weapons/range/weapon_smg.tscn" id="2_k6p3g"]
+[ext_resource type="Script" uid="uid://ru8ftjhq0b3f" path="res://resources/items/weapons/item_weapon.gd" id="3_8x3tx"]
+[ext_resource type="Resource" uid="uid://bit0cjedt6mtg" path="res://resources/items/weapons/range/smg/stats_smg_1.tres" id="4_4yy85"]
+
+[resource]
+script = ExtResource("3_8x3tx")
+type = 1
+scene = ExtResource("2_k6p3g")
+stats = ExtResource("4_4yy85")
+item_name = "SMG IV"
+item_icon = ExtResource("1_l5rpr")
+item_tier = 3
+item_type = 0
+item_cost = 155
+metadata/_custom_type_script = "uid://ru8ftjhq0b3f"

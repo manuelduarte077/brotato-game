@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="WeaponStats" load_steps=3 format=3 uid="uid://c4286ralhistm"]
+
+[ext_resource type="PackedScene" uid="uid://drkyu54or4era" path="res://scenes/projectiles/projectile_pistol.tscn" id="1_frqhm"]
+[ext_resource type="Script" uid="uid://c7dropxg1o1hb" path="res://resources/items/weapons/weapon_stats.gd" id="1_mi2gk"]
+
+[resource]
+script = ExtResource("1_mi2gk")
+damage = 11
+accuracy = 0.9
+cooldown = 0.9
+crit_chance = 0.08
+crit_damage = 2.0
+max_range = 360.0
+knockback = 1.4
+life_steal = 0.0
+recoil = 25.0
+recoil_duration = 0.1
+attack_duration = 0.2
+back_duration = 0.15
+projectile_scene = ExtResource("1_frqhm")
+projectile_speed = 1500.0
+metadata/_custom_type_script = "uid://c7dropxg1o1hb"

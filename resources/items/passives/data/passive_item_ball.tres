@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemPassive" load_steps=3 format=3 uid="uid://b4mxeykkucplr"]
+
+[ext_resource type="Texture2D" uid="uid://c41e5to043u4m" path="res://assets/sprites/Upgrades/2.png" id="1_6frek"]
+[ext_resource type="Script" uid="uid://ca60w8yw87hpp" path="res://resources/items/passives/item_passive.gd" id="1_omkrg"]
+
+[resource]
+script = ExtResource("1_omkrg")
+add_value = 5.0
+add_stats_id = "damage"
+remove_value = 0.0
+remove_stats_id = ""
+item_name = "Power Ball"
+item_icon = ExtResource("1_6frek")
+item_tier = 0
+item_type = 2
+item_cost = 30
+metadata/_custom_type_script = "uid://ca60w8yw87hpp"

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ItemWeapon" load_steps=6 format=3 uid="uid://b4d6n68q7bf20"]
+
+[ext_resource type="Texture2D" uid="uid://ctbl7s5o37g7v" path="res://assets/sprites/Weapons/Icons/weapon_pistol_icon.png" id="1_0yh13"]
+[ext_resource type="PackedScene" uid="uid://v4rfk7fl4dnl" path="res://scenes/weapons/range/weapon_pistol.tscn" id="2_v01sv"]
+[ext_resource type="Script" uid="uid://ru8ftjhq0b3f" path="res://resources/items/weapons/item_weapon.gd" id="3_ggani"]
+[ext_resource type="Resource" uid="uid://c4286ralhistm" path="res://resources/items/weapons/range/pistol/stats_pistol_2.tres" id="4_v01sv"]
+[ext_resource type="Resource" uid="uid://bf62a1n88nl0m" path="res://resources/items/weapons/range/pistol/item_pistol_3.tres" id="5_ggani"]
+
+[resource]
+script = ExtResource("3_ggani")
+type = 0
+scene = ExtResource("2_v01sv")
+stats = ExtResource("4_v01sv")
+upgrade_to = ExtResource("5_ggani")
+item_name = "Pistol II"
+item_icon = ExtResource("1_0yh13")
+item_tier = 1
+item_type = 0
+item_cost = 28
+metadata/_custom_type_script = "uid://ru8ftjhq0b3f"
